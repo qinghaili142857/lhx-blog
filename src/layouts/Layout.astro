@@ -1,0 +1,577 @@
+---
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+
+import ConfigCarrier from "@components/ConfigCarrier.astro";
+import { profileConfig, siteConfig } from "@/config";
+import {
+	AUTO_MODE,
+	BANNER_HEIGHT,
+	BANNER_HEIGHT_EXTEND,
+	BANNER_HEIGHT_HOME,
+	DARK_MODE,
+	DEFAULT_THEME,
+	LIGHT_MODE,
+	PAGE_WIDTH,
+} from "../constants/constants";
+import { defaultFavicons } from "../constants/icon";
+import type { Favicon } from "../types/config";
+import { pathsEqual, url } from "../utils/url-utils";
+import "katex/dist/katex.css";
+
+interface Props {
+	title?: string;
+	banner?: string;
+	description?: string;
+	setOGTypeArticle?: boolean;
+	lang?: string;
+}
+
+let { title, banner, description, lang, setOGTypeArticle } = Astro.props;
+
+const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+
+const configHue = siteConfig.themeColor.hue;
+if (!banner || typeof banner !== "string" || banner.trim() === "") {
+	banner = siteConfig.banner.src;
+}
+
+banner = siteConfig.banner.src;
+
+const enableBanner = siteConfig.banner.enable;
+
+let pageTitle: string;
+if (title) {
+	pageTitle = `${title} - ${siteConfig.title}`;
+} else {
+	pageTitle = `${siteConfig.title} - ${siteConfig.subtitle}`;
+}
+
+const favicons: Favicon[] =
+	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
+
+const siteLang = "zh-CN";
+
+const bannerOffsetByPosition = {
+	top: `${BANNER_HEIGHT_EXTEND}vh`,
+	center: `${BANNER_HEIGHT_EXTEND / 2}vh`,
+	bottom: "0",
+};
+const bannerOffset =
+	bannerOffsetByPosition[siteConfig.banner.position || "center"];
+---
+
+<!DOCTYPE html>
+<html lang={siteLang} class="bg-[var(--page-bg)] transition text-[14px] md:text-[16px]"
+	  data-overlayscrollbars-initialize
+>
+	<head>
+		<!-- Microsoft Clarity -->
+		<script type="text/javascript">
+			(function(c,l,a,r,i,t,y){
+				c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+				t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+				y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+			})(window, document, "clarity", "script", "tajp0d55h4");
+		</script>
+		
+		<!-- Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-D8YKHXY480"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-D8YKHXY480');
+		</script>
+		
+		<!-- Umami -->
+		<script type="text/partytown" src="https://cloud.umami.is/script.js" data-website-id="a1a1f897-326f-4e68-a6f0-54e9dc361522"></script>
+		
+		<title>{pageTitle}</title>
+
+		<meta charset="UTF-8" />
+		<meta name="description" content={description || pageTitle}>
+		<meta name="author" content={profileConfig.name}>
+
+		<meta property="og:site_name" content={siteConfig.title}>
+		<meta property="og:url" content={Astro.url}>
+		<meta property="og:title" content={pageTitle}>
+		<meta property="og:description" content={description || pageTitle}>
+		{setOGTypeArticle ? (
+        <meta property="og:type" content="article" />
+        ) : (
+        <meta property="og:type" content="website" />
+        )}
+
+		<meta name="twitter:card" content="summary_large_image">
+		<meta property="twitter:url" content={Astro.url}>
+		<meta name="twitter:title" content={pageTitle}>
+		<meta name="twitter:description" content={description || pageTitle}>
+
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		{favicons.map(favicon => (
+			<link rel="icon"
+				  href={favicon.src.startsWith('/') ? url(favicon.src) : favicon.src}
+				  sizes={favicon.sizes}
+				  media={favicon.theme && `(prefers-color-scheme: ${favicon.theme})`}
+			/>
+		))}
+
+		<!-- Set the theme before the page is rendered to avoid a flash -->
+		<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, AUTO_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue}}>
+			// Load the theme from local storage
+			const theme = localStorage.getItem('theme') || DEFAULT_THEME;
+			switch (theme) {
+				case LIGHT_MODE:
+					document.documentElement.classList.remove('dark');
+					break
+				case DARK_MODE:
+					document.documentElement.classList.add('dark');
+					break
+				case AUTO_MODE:
+					if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+						document.documentElement.classList.add('dark');
+					} else {
+						document.documentElement.classList.remove('dark');
+					}
+			}
+
+			// Load the hue from local storage
+			const hue = localStorage.getItem('hue') || configHue;
+			document.documentElement.style.setProperty('--hue', hue);
+
+			// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
+			let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
+			offset = offset - offset % 4;
+			document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
+		</script>
+		<style define:vars={{
+			configHue,
+			'page-width': `${PAGE_WIDTH}rem`,
+		}}></style>
+
+		<slot name="head"></slot>
+
+		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
+
+	</head>
+	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}
+		  data-overlayscrollbars-initialize
+	>
+		<ConfigCarrier></ConfigCarrier>
+		<slot />
+
+		<div id="page-height-extend" class="hidden h-[300vh]"></div>
+	</body>
+</html>
+
+<style is:global define:vars={{
+	bannerOffset,
+	'banner-height-home': `${BANNER_HEIGHT_HOME}vh`,
+	'banner-height': `${BANNER_HEIGHT}vh`,
+}}>
+@tailwind components;
+@layer components {
+	.enable-banner.is-home #banner-wrapper {
+		@apply h-[var(--banner-height-home)] translate-y-[var(--banner-height-extend)]
+	}
+	.enable-banner #banner-wrapper {
+		@apply h-[var(--banner-height-home)]
+	}
+
+	.enable-banner.is-home #banner {
+		@apply h-[var(--banner-height-home)] translate-y-0
+	}
+	.enable-banner #banner {
+		@apply h-[var(--banner-height-home)] translate-y-[var(--bannerOffset)]
+	}
+	.enable-banner.is-home #main-grid {
+		@apply translate-y-[var(--banner-height-extend)];
+	}
+	.enable-banner #top-row {
+		@apply h-[calc(var(--banner-height-home)_-_4.5rem)] transition-all duration-300
+	}
+	.enable-banner.is-home #sidebar-sticky {
+		@apply top-[calc(1rem_-_var(--banner-height-extend))]
+	}
+	.navbar-hidden {
+		@apply opacity-0 -translate-y-16
+	}
+	
+}
+</style>
+
+<script>
+import { OverlayScrollbars } from 'overlayscrollbars';
+import { getHue, getStoredTheme, setHue, setTheme, onThemeChange } from "../utils/setting-utils";
+import { pathsEqual, url } from "../utils/url-utils";
+import {
+	BANNER_HEIGHT,
+	BANNER_HEIGHT_HOME,
+	BANNER_HEIGHT_EXTEND,
+	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
+} from "../constants/constants";
+import { siteConfig } from '../config';
+
+// 导入 Fancybox
+import { Fancybox } from "@fancyapps/ui";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
+
+const bannerEnabled = !!document.getElementById('banner-wrapper');
+let fancyboxInstance; // Fancybox 实例
+
+function setClickOutsideToClose(panel, ignores) {
+	document.addEventListener("click", event => {
+		let panelDom = document.getElementById(panel);
+		let tDom = event.target;
+		if (!(tDom instanceof Node)) return;
+		for (let ig of ignores) {
+			let ie = document.getElementById(ig)
+			if (ie == tDom || (ie?.contains(tDom))) {
+				return;
+			}
+		}
+		panelDom?.classList.add("float-panel-closed");
+	});
+}
+
+function loadTheme() {
+	const theme = getStoredTheme();
+	setTheme(theme);
+}
+
+function loadHue() {
+	setHue(getHue());
+}
+
+/**
+ * 图片加载处理函数
+ * 处理所有使用 ImageWrapper 组件的图片的加载动画
+ */
+function initImageLoading() {
+    const imageWrappers = document.querySelectorAll('[data-image-wrapper]');
+    
+    // 如果没有图片，直接返回
+    if (imageWrappers.length === 0) return;
+    
+    imageWrappers.forEach(wrapper => {
+        const img = wrapper.querySelector('[data-image-element]');
+        const loadingBar = wrapper.querySelector('.loading-bar');
+        
+        if (!img || !loadingBar) return;
+        
+        // 检查图片是否已经加载完成（从缓存）
+        if (img.complete && img.naturalHeight !== 0) {
+            img.classList.add('loaded');
+            loadingBar.classList.add('hide');
+            return;
+        }
+        
+        // 创建新的 Image 对象来检测加载
+        const tempImg = new Image();
+        tempImg.src = img.src;
+        
+        tempImg.onload = () => {
+            img.classList.add('loaded');
+            setTimeout(() => {
+                loadingBar.classList.add('hide');
+            }, 300);
+        };
+        
+        tempImg.onerror = () => {
+            img.classList.add('loaded');
+            loadingBar.classList.add('hide');
+        };
+    });
+}
+
+/**
+ * 图片懒加载观察器
+ * 监听新添加的图片并自动初始化加载动画
+ */
+function setupImageObserver() {
+    // 只有当页面上有图片时才创建观察器
+    const hasImages = document.querySelectorAll('[data-image-wrapper]').length > 0;
+    if (!hasImages) return;
+    
+    const observer = new MutationObserver((mutations) => {
+        let hasNewImages = false;
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === 1 && node.querySelector && node.querySelector('[data-image-wrapper]')) {
+                    hasNewImages = true;
+                }
+            });
+        });
+        if (hasNewImages) {
+            initImageLoading();
+        }
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+}
+
+/**
+ * 按需初始化 KaTeX 公式的自定义滚动条
+ * 只有当页面上存在 .katex-display 元素时，才会执行相关逻辑。
+ */
+function initCustomScrollbar() {
+	const bodyElement = document.querySelector('body');
+	if (bodyElement && !bodyElement.hasAttribute('data-overlayscrollbars-initialize')) {
+		OverlayScrollbars(
+			{ target: bodyElement, cancel: { nativeScrollbarsOverlaid: true } },
+			{ scrollbars: { theme: 'scrollbar-base scrollbar-auto py-1', autoHide: 'move', autoHideDelay: 500 } }
+		);
+	}
+
+	const katexElements = document.querySelectorAll('.katex-display');
+	if (katexElements.length === 0) {
+		return; // 如果页面没有 KaTeX 公式，直接返回，避免不必要的性能开销
+	}
+
+	const katexObserverOptions = { root: null, rootMargin: '100px', threshold: 0.1 };
+	const processKatexElement = (element) => {
+		if (!element.parentNode || element.hasAttribute('data-scrollbar-initialized')) return;
+		const container = document.createElement('div');
+		container.className = 'katex-display-container';
+		container.setAttribute('aria-label', 'scrollable container for formulas');
+		element.parentNode.insertBefore(container, element);
+		container.appendChild(element);
+		OverlayScrollbars(container, {
+			scrollbars: { theme: 'scrollbar-base scrollbar-auto', autoHide: 'leave', autoHideDelay: 500 }
+		});
+		element.setAttribute('data-scrollbar-initialized', 'true');
+	};
+
+	const katexObserver = new IntersectionObserver((entries, observer) => {
+		entries.forEach(entry => {
+			if (entry.isIntersecting) {
+				processKatexElement(entry.target);
+				observer.unobserve(entry.target);
+			}
+		});
+	}, katexObserverOptions);
+
+	katexElements.forEach(element => katexObserver.observe(element));
+}
+
+/**
+ * 按需初始化 Fancybox 图片灯箱
+ * 只有当页面上存在符合条件的图片时，才创建实例。
+ */
+function createFancybox() {
+    const gallerySelector = ".custom-md img, #post-cover img";
+    const images = document.querySelectorAll(gallerySelector);
+
+    // 如果页面上没有图片，则不初始化灯箱，节省性能
+    if (images.length === 0) {
+        return;
+    }
+
+    // 为每个图片添加 data-fancybox 属性
+    images.forEach((img, index) => {
+        if (!img.hasAttribute('data-fancybox')) {
+            img.setAttribute('data-fancybox', 'gallery');
+            // 可选：添加标题，例如从 alt 属性获取
+            if (img.alt && !img.hasAttribute('data-caption')) {
+                img.setAttribute('data-caption', img.alt);
+            }
+        }
+    });
+
+    // 初始化 Fancybox
+    fancyboxInstance = Fancybox.bind(gallerySelector, {
+        // Fancybox 配置选项
+        dragToClose: false,
+        Toolbar: {
+            display: {
+                left: ['infobar'],
+                middle: [],
+                right: ['close'],
+            },
+        },
+        closeButton: 'top',
+        click: false,
+        dblclick: false,
+        wheel: 'toggleZoom',
+    });
+}
+
+function showBanner() {
+	if (!siteConfig.banner.enable) return;
+	const banner = document.getElementById('banner');
+	if (!banner) return;
+	banner.classList.remove('opacity-0', 'scale-105');
+}
+
+// 页面滚动时的处理函数
+function scrollFunction() {
+	const backToTopBtn = document.getElementById('back-to-top-btn');
+	const toc = document.getElementById('toc-wrapper');
+	const navbar = document.getElementById('navbar-wrapper');
+	const bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100);
+
+	if (backToTopBtn) {
+		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
+			backToTopBtn.classList.remove('hide');
+		} else {
+			backToTopBtn.classList.add('hide');
+		}
+	}
+
+	if (bannerEnabled && toc) {
+		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
+			toc.classList.remove('toc-hide');
+		} else {
+			toc.classList.add('toc-hide');
+		}
+	}
+
+	if (bannerEnabled && navbar) {
+		const NAVBAR_HEIGHT = 72;
+		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16;
+		let currentBannerHeight = BANNER_HEIGHT;
+		if (document.body.classList.contains('lg:is-home') && window.innerWidth >= 1024) {
+			currentBannerHeight = BANNER_HEIGHT_HOME;
+		}
+		const threshold = window.innerHeight * (currentBannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16;
+		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
+			navbar.classList.add('navbar-hidden');
+		} else {
+			navbar.classList.remove('navbar-hidden');
+		}
+	}
+}
+
+// 浏览器窗口大小变化时的处理函数
+function resizeFunction() {
+	let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
+	offset = offset - offset % 4;
+	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
+}
+
+/**
+ * 核心初始化函数
+ * 在首次加载和每次 swup 页面切换后运行
+ */
+function initPageContent() {
+	// 使用 requestIdleCallback 延迟执行非关键任务
+	if ('requestIdleCallback' in window) {
+		requestIdleCallback(() => {
+			initCustomScrollbar();
+			createFancybox();
+			initImageLoading();
+		}, { timeout: 200 });
+	} else {
+		// 降级到 setTimeout
+		setTimeout(() => {
+			initCustomScrollbar();
+			createFancybox();
+			initImageLoading();
+		}, 0);
+	}
+}
+
+/**
+ * 设置 swup 钩子，用于处理客户端路由
+ */
+function setupSwupHooks() {
+	if (!window.swup) return;
+
+	window.swup.hooks.on('link:click', () => {
+		document.documentElement.style.setProperty('--content-delay', '0ms');
+		if (!bannerEnabled) return;
+		let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - 72 - 16;
+		let navbar = document.getElementById('navbar-wrapper');
+		if (!navbar || !document.body.classList.contains('lg:is-home')) return;
+		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
+			navbar.classList.add('navbar-hidden');
+		}
+	});
+    
+	window.swup.hooks.on('content:replace', () => {
+        // 在替换内容前，销毁旧的灯箱实例
+        if (fancyboxInstance) {
+            fancyboxInstance.destroy();
+            fancyboxInstance = null;
+        }
+	}, { before: true });
+
+	window.swup.hooks.on('page:view', () => {
+        // 页面切换动画完成后，为新内容初始化脚本
+        initPageContent();
+        
+        // 恢复页面高度
+		const heightExtend = document.getElementById('page-height-extend');
+		if (heightExtend) heightExtend.classList.remove('hidden');
+
+        const toc = document.getElementById('toc-wrapper');
+        if (toc) toc.classList.remove('toc-not-ready');
+	});
+
+	window.swup.hooks.on('visit:start', (visit) => {
+		const bodyElement = document.querySelector('body');
+		if (pathsEqual(visit.to.url, url('/'))) {
+			bodyElement?.classList.add('lg:is-home');
+		} else {
+			bodyElement?.classList.remove('lg:is-home');
+		}
+		const heightExtend = document.getElementById('page-height-extend');
+		if (heightExtend) heightExtend.classList.remove('hidden');
+		const toc = document.getElementById('toc-wrapper');
+		if (toc) toc.classList.add('toc-not-ready');
+	});
+
+	window.swup.hooks.on('visit:end', () => {
+		setTimeout(() => {
+			const heightExtend = document.getElementById('page-height-extend');
+			if (heightExtend) heightExtend.classList.add('hidden');
+		}, 200);
+	});
+}
+
+/**
+ * 网站总入口函数
+ * 设置所有一次性的事件监听器和钩子
+ */
+function initializeSite() {
+	// 加载主题和颜色配置
+	loadTheme();
+	loadHue();
+
+	// 设置一次性的点击监听
+	setClickOutsideToClose("display-setting", ["display-setting", "display-settings-switch"]);
+	setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"]);
+	setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"]);
+	
+    // 显示 Banner
+    showBanner();
+
+	// 绑定全局滚动和窗口大小变化事件
+	window.onscroll = scrollFunction;
+	window.onresize = resizeFunction;
+
+	// 设置 Swup 导航钩子
+	setupSwupHooks();
+
+	// 首次加载页面时，执行内容初始化
+	initPageContent();
+	
+	// [新增] 设置图片观察器（仅当页面上有图片时）
+	if (document.querySelectorAll('[data-image-wrapper]').length > 0) {
+		setupImageObserver();
+	}
+}
+
+// 启动逻辑：等待 swup 可用后，初始化所有功能
+if (window.swup) {
+	initializeSite();
+} else {
+	document.addEventListener('swup:enable', initializeSite);
+}
+</script>
