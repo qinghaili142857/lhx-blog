@@ -1,9 +1,9 @@
 ---
-title: Draft Example
-published: 1000-07-01
+title: draft
+published: 2025-10-31
 image: "https://api.lxtu.cn/api.php?category=ecy"
-tags: [Markdown, Blogging, Demo]
-category: Default
+tags: [Markdown, Test, Demo]
+category: Test
 draft: false
 series: Examples
 ---
@@ -19,7 +19,7 @@ When the article is ready for publication, you can update the "draft" field to "
 
 ```markdown
 ---
-title: Draft Example
+title: Hello world
 published: 2024-01-11T04:40:26.381Z
 tags: [Markdown, Blogging, Demo]
 category: Examples
