@@ -11,6 +11,7 @@ lang: 'Content'
 
 # Hello World!
 The followings are my first program:
+![](https://github.com/qinghaili142857/picx-images-hosting/raw/master/微信图片_20250425184400_2.8l0hwbk7ho.webp)
 ```c
 #include<stdio.h>
 
