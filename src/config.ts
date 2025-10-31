@@ -8,11 +8,11 @@ import type {
 import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
-	title: "lhx's Blog",
-	subtitle: "愿你走过半生，归来仍是少年",
+	title: "lhx",
+	subtitle: "Blog",
 	themeColor: {
-		hue: 275, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
-		fixed: false, // Hide the theme color picker for visitors
+		hue: 275, //Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
+		fixed: true, // Hide the theme color picker for visitors
 	},
 	banner: {
 		enable: true,
@@ -59,8 +59,8 @@ export const navBarConfig: NavBarConfig = {
 
 export const profileConfig: ProfileConfig = {
 	avatar: "/avatar.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/' 原assets/images/demo-avatar.png,可选https://q2.qlogo.cn/headimg_dl?dst_uin=189563385&spec=0
-	name: "yCENzh",
-	bio: "Protect What You Love./爱你所爱！",
+	name: "lhx's blog",
+	bio: "Nothing is impossible",
 	links: [
 		/*{
 			name: "Twitter",
@@ -77,9 +77,9 @@ export const profileConfig: ProfileConfig = {
 		{
 			name: "GitHub",
 			icon: "fa6-brands:github",
-			url: "https://github.com/yCENzh",
+			url: "https://github.com/qinghaili142857/lhx-blog",
 		},
-		{
+		/*{
 			name: "Telegram",
 			icon: "fa6-brands:telegram",
 			url: "https://t.me/yCENzh",
@@ -88,7 +88,7 @@ export const profileConfig: ProfileConfig = {
 			name: "开往",
 			icon: "fa6-solid:train-subway",
 			url: "https://www.travellings.cn/train.html",
-		},
+		},*/
 	],
 };
 
