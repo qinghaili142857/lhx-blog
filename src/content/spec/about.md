@@ -1,9 +1,9 @@
 # About
-![随机图床](https://rba.kanostar.top/adapt)
-
+![](https://qinghaili142857.github.io/picx-images-hosting/ca7ac7a555384412b9666e5b88740720dd06486f.2h8ptjfh87.webp)
+<!-- ![随机图床](https://rba.kanostar.top/adapt)
 [/posts/mc/download/](/posts/mc/download/)
 
-本站 `Favicon` 原图取自 [Pixiv @ReRin](https://www.pixiv.net/artworks/113745329)
+本站 `Favicon` 原图取自 [Pixiv @ReRin](https://www.pixiv.net/artworks/113745329)-->
 
 # 关于&隐私政策
 
