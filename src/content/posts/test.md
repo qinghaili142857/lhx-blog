@@ -7,7 +7,10 @@ categories:
   - notebook
 tags:
   - linear algebra
+draft: false
+lang: 'Content'
 ---
+
 # 1 行列式
 ## 1.1 n阶行列式的定义
 >$n$阶行列式是由$n^2$个数，排成$n$行、$n$列的算式
