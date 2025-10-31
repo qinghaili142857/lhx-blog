@@ -49,11 +49,11 @@ export const navBarConfig: NavBarConfig = {
 			url: "https://github.com/yCENzh", // Internal links should not include the base path, as it is automatically added
 			external: true, // Show an external link icon and will open in a new tab
 		},*/
-		{
+		/*{
 			name: "开往",
 			url: "https://www.travellings.cn/train.html",
 			external: true,
-		},
+		},*/
 	],
 };
 
@@ -89,6 +89,11 @@ export const profileConfig: ProfileConfig = {
 			icon: "fa6-solid:train-subway",
 			url: "https://www.travellings.cn/train.html",
 		},*/
+		{
+			name:"Bilibili",
+			icon:"fa6-brands:bilibili",
+			url:"https://space.bilibili.com/3493112880040520?spm_id_from=333.1007.0.0",
+		}
 	],
 };
 
