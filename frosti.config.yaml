@@ -57,32 +57,32 @@ site:
       target: _self
     - id: contact
       text: Contact
-      href: "mailto:contact.cqshi@stu.xjtu.edu.cn"
+      href: "mailto:contact.lhx-1001@stu.xjtu.edu.cn"
       target: _blank # 在新标签页打开
       svg: "material-symbols:attach-email-outline-rounded"
 
 # 用户的个人信息
 user:
-  name: lnscq # 用户名
-  site: "https://dannyshi.pages.dev/" # 用户的网站链接
+  name: qinghaili # 用户名
+  site: "https://lhxzns.pages.dev/" # 用户的网站链接
   avatar: /head.jpg # 用户头像路径
   sidebar: # 侧边栏配置
     social:
-      - href: "https://github.com/lnscq"
+      - href: "https://github.com/qinghaili142857"
         ariaLabel: Github
         title: Github
         svg: "ri:github-line"
-      - href: "https://space.bilibili.com/663306442"
+      - href: "https://space.bilibili.com/3493112880040520"
         ariaLabel: BiliBili
         title: BiliBili
         svg: "ri:bilibili-line"
   footer:
     social:
-      - href: "https://github.com/lnscq"
+      - href: "https://github.com/qinghaili142857"
         ariaLabel: Github
         title: Github
         svg: "ri:github-line"
-      - href: "https://space.bilibili.com/663306442"
+      - href: "https://space.bilibili.com/3493112880040520"
         ariaLabel: BiliBili
         title: BiliBili
         svg: "ri:bilibili-line"

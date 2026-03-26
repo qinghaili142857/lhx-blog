@@ -11,15 +11,24 @@ const currentPath = Astro.url.pathname;
 <Card>
   <div class="relative p-4 flex flex-col">
     <div class="p-2 flex justify-center">
-      <Image
-        class="mask mask-circle"
-        format="webp"
-        width={250}
-        height={250}
-        src={USER_AVATAR}
-        alt="Profile"
-        loading="eager"
-      />
+      <a
+        class="avatar-link"
+        href="/"
+        aria-label="Go to Home"
+        onclick="if (window.location.pathname === '/') { window.location.reload(); return false; }"
+      >
+        <div class="avatar-shell">
+          <Image
+            class="avatar-image"
+            format="webp"
+            width={250}
+            height={250}
+            src={USER_AVATAR}
+            alt="Profile"
+            loading="eager"
+          />
+        </div>
+      </a>
     </div>
     <ul class="menu bg-transparent w-full m-0 p-0 hidden md:flex flex-col items-center lg:items-start">
       {
@@ -89,3 +98,45 @@ const currentPath = Astro.url.pathname;
     </div>
   </div>
 </Card>
+
+<style>
+  .avatar-link {
+    display: inline-flex;
+    text-decoration: none;
+  }
+
+  .avatar-shell {
+    display: inline-flex;
+    width: min(100%, 272px);
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow:
+      0 18px 40px rgba(15, 23, 42, 0.16),
+      0 3px 10px rgba(15, 23, 42, 0.08);
+    transition:
+      transform 220ms ease,
+      box-shadow 220ms ease,
+      border-color 220ms ease;
+  }
+
+  .avatar-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 320ms ease;
+  }
+
+  .avatar-link:hover .avatar-shell {
+    transform: translateY(-4px);
+    box-shadow:
+      0 24px 52px rgba(15, 23, 42, 0.2),
+      0 6px 16px rgba(15, 23, 42, 0.12);
+  }
+
+  .avatar-link:hover .avatar-image {
+    transform: scale(1.04);
+  }
+</style>

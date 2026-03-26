@@ -11,21 +11,23 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       <div class="top-grid">
         <div class="profile glass">
           <div class="profile-meta">
-            <h1 class="name">Danny</h1>
+            <h1 class="name">Li Haoxuan</h1>
 
             <div class="chips">
               <a class="chip" href="#" aria-label="Location">
                 <Icon name="lucide:map-pin" class="ico" />
                 <span>China</span>
               </a>
-              <a class="chip" href="https://github.com/lnscq" target="_blank" aria-label="GitHub">
+              <a class="chip" href="https://github.com/qinghaili142857" target="_blank" aria-label="GitHub">
                 <Icon name="lucide:github" class="ico" />
                 <span>GitHub</span>
               </a>
+              <!--
               <a class="chip" href="/contact" aria-label="Email">
                 <Icon name="lucide:mail" class="ico" />
                 <span>Email</span>
               </a>
+
               <a class="chip" href="https://openreview.net/profile?id=%7EChengqi_Shi1" aria-label="Scholar">
                 <Icon name="lucide:graduation-cap" class="ico" />
                 <span>Scholar</span>
@@ -39,18 +41,44 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
               >
                 <Icon name="lucide:file-text" class="ico" />
                 <span>CV</span>
-              </a>
+              </a> -->
             </div>
 
             <div class="headline">
-              <span class="badge">学生</span>
-              <span class="sep">/</span>
-              <span class="motto">Cogito, ergo sum.</span>
+              <span
+                class="motto"
+                id="typed-motto"
+                data-text="Though time may steal the years away,\nmay your heart remain as young as yesterday."
+              ></span>
             </div>
 
+            <script is:inline>
+              const mottoEl = document.getElementById("typed-motto");
+              if (mottoEl) {
+                const fullText = mottoEl.dataset.text ?? "";
+                let index = 0;
+
+                const renderMotto = (text) => {
+                  mottoEl.innerHTML = text.replace(/\n/g, "<br />");
+                };
+
+                renderMotto("");
+
+                const typeTimer = window.setInterval(() => {
+                  index += 1;
+                  renderMotto(fullText.slice(0, index));
+
+                  if (index >= fullText.length) {
+                    window.clearInterval(typeTimer);
+                  }
+                }, 42);
+              }
+            </script>
+
             <p class="about">
-              I am a first-year student at Xi'an Jiaotong University, majoring in Computer Science and Technology.
-              Welcome to my personal website!
+              I am a first-year student at <span class="text-emphasis">Xi'an Jiaotong University</span>, majoring in
+              <span class="text-emphasis">Microelectronic Science and Engineering</span>. Welcome to my personal
+              website!
             </p>
 
             <div class="cta-row">
@@ -77,15 +105,15 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
             <div class="quick-links">
               <a class="ql" href="/about">
                 <Icon name="lucide:user" class="ico" />
-                <span>关于我</span>
+                <span>About Me</span>
               </a>
               <a class="ql" href="/blog/categories">
                 <Icon name="lucide:archive" class="ico" />
-                <span>文章归档</span>
+                <span>Article Archives</span>
               </a>
               <a class="ql" href="/contact">
                 <Icon name="lucide:mail" class="ico" />
-                <span>联系我</span>
+                <span>Contact Me</span>
               </a>
             </div>
           </div>
@@ -97,7 +125,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
             </div>
             <div class="status">
               <span class="dot"></span>
-              <span>开学了...</span>
+              <span>slacking off...</span>
             </div>
           </div>
         </div>
@@ -112,19 +140,25 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 
       <div class="glass section-card">
         <div class="section-text intro-block">
-          <p>Hi! I'm Danny👋, a computer science undergraduate at Xi'an Jiaotong University（西安交通大学）.</p>
           <p>
-            I have a passion for embodied AI 🤖 and computer vision 👁️‍🗨️. This website is a space where I share my
-            projects, thoughts, and experiences. Feel free to explore and reach out if you'd like to connect! 🤝
+            Glad to see you, I'm lhx, a integrated circuit undergraduate at
+            <span class="text-emphasis">Xi'an Jiaotong University</span>.
+          </p>
+          <p>
+            I'm enthusiastic about
+            <span class="text-emphasis">Digital IC Design, Computer Architecture, AI and AI Chip</span>. This website
+            is a space where I share my projects, thoughts, and experiences. Feel free to explore and reach out if
+            you'd like to connect!
           </p>
         </div>
+        <!--
         <div class="cv-block">
           <p class="cv-line">Here is my academic CV, feel free to download it.</p>
           <a class="cv-btn" href="/CV/CV_estudiante_microthali.pdf" target="_blank" rel="noopener noreferrer" download>
             <Icon name="lucide:download" class="ico" />
             <span>Download CV</span>
           </a>
-        </div>
+        </div>-->
       </div>
     </section>
 
@@ -145,13 +179,13 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
             <div class="edu-title">西安交通大学</div>
             <div class="edu-role">少年班</div>
           </div>
-          <div class="edu-time">2023.9 - 2025.7</div>
+          <div class="edu-time">since 2023.9</div>
         </a>
 
-        <a class="glass edu-card edu-link" href="http://www.cs.xjtu.edu.cn/" target="_blank" rel="noopener noreferrer">
+        <a class="glass edu-card edu-link" href="http://www.ele.xjtu.edu.cn/" target="_blank" rel="noopener noreferrer">
           <div class="edu-top">
             <div class="edu-title">西安交通大学</div>
-            <div class="edu-role">计算机科学与技术</div>
+            <div class="edu-role">微电子科学与工程</div>
           </div>
           <div class="edu-time">2025.9 - present</div>
         </a>
@@ -163,14 +197,14 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       <div class="section-head">
         <h2 class="row">
           <Icon name="lucide:github" class="ico" />
-          <span>项目数据看板</span>
+          <span>Project Data Dashboard</span>
         </h2>
       </div>
 
       <div class="glass dash">
         <GitHubStats
-          username="lnscq"
-          repositoryName="Danny-s-blog"
+          username="qinghaili142857"
+          repositoryName="lhx-blog"
           showLanguages={true}
           showContributors={true}
           showStars={true}
@@ -179,22 +213,22 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       </div>
     </section>
 
-    <!-- Featured Song (Random Beatles Embed) -->
+    <!-- Featured Song (Random QQ Music Link) -->
     <section class="container section">
       <h2 class="text-2xl font-bold mb-6 flex items-center justify-between gap-2">
         <span class="flex items-center gap-2">
           <Icon name="lucide:music" class="w-6 h-6 text-primary" />
-          <span>Featured Song · The Beatles</span>
+          <span>Featured Song </span>
         </span>
 
         <span class="text-sm text-base-content/60">
-          更新时间 / Updated
+          Updated
           <span class="font-medium" id="song-updated"></span>
         </span>
       </h2>
 
       <script is:inline>
-        // 1) 更新时间（UTC+8�?
+        // 更新时间（UTC+8）
         const el = document.getElementById("song-updated");
         if (el) {
           const s = new Intl.DateTimeFormat("zh-CN", {
@@ -208,95 +242,265 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
           }).format(new Date());
           el.textContent = s;
         }
-        const BEATLES_EMBEDS = [
-          {
-            songName: "Hey Jude",
-            artist: "The Beatles",
-            note: "刷新会随机一首/ Random on refresh",
-            appleMusicLink: "https://music.apple.com/cn/song/hey-jude/1441164426",
-            // 常用做法：用包含该曲目的专辑/合辑 embed（单�?embed 并不总是稳定�?
-            embedUrl: "https://embed.music.apple.com/cn/album/1/1441133180",
-          },
-          {
-            songName: "Let It Be",
-            artist: "The Beatles",
-            note: "刷新会随机一首/ Random on refresh",
-            appleMusicLink: "https://music.apple.com/cn/song/let-it-be/1441164524",
-            embedUrl: "https://embed.music.apple.com/cn/album/let-it-be/1441164495",
-          },
-        ];
-
-        function pickOne(list) {
-          return list[Math.floor(Math.random() * list.length)];
-        }
-
-        const picked = pickOne(BEATLES_EMBEDS);
-
-        const noteEl = document.getElementById("featured-note");
-        const songEl = document.getElementById("featured-song");
-        const artistEl = document.getElementById("featured-artist");
-        const linkEl = document.getElementById("featured-link");
-        const frameEl = document.getElementById("featured-iframe");
-
-        if (noteEl) noteEl.textContent = picked.note;
-        if (songEl) songEl.textContent = picked.songName;
-        if (artistEl) artistEl.textContent = picked.artist;
-
-        if (linkEl) linkEl.setAttribute("href", picked.appleMusicLink);
-        if (frameEl) frameEl.setAttribute("src", picked.embedUrl);
       </script>
 
       <div class="card bg-base-200 p-6 shadow-md">
         <div class="flex flex-col gap-4">
-          <!-- Text row -->
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <p class="text-sm text-base-content/60" id="featured-note">刷新会随机一首?/ Random on refresh</p>
-              <h3 class="text-xl font-bold leading-snug" id="featured-song">The Beatles</h3>
-              <p class="text-base-content/70" id="featured-artist">The Beatles</p>
+              <h3 class="music-heading text-xl md:text-2xl leading-snug">Curated on QQ Music</h3>
             </div>
 
+            <div class="badge badge-primary badge-outline">4 Songs</div>
+          </div>
+
+          <div class="bg-base-100/60 rounded-xl p-4">
+            <div class="flex flex-col md:flex-row items-start gap-4">
+              <a
+                class="block w-full md:w-48 aspect-square rounded-[1.25rem] overflow-hidden bg-base-100/80 shadow-lg ring-1 ring-base-content/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                href="https://y.qq.com/n/ryqq_v2/albumDetail/002HgJfp494Uax"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src="/image/robin.webp"
+                  alt="崩坏星穹铁道-空气蛹 专辑封面"
+                  class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                  loading="lazy"
+                />
+              </a>
+
+              <div class="flex-1 space-y-3">
+                <div>
+                  <p class="music-title text-xl leading-snug">
+                    <span class="album-highlight">崩坏星穹铁道-空气蛹 INSIDE</span>
+                  </p>
+                  <p class="music-meta mt-1">知更鸟 / HOYO-MiX / Chevy</p>
+                </div>
+
+                <p class="music-detail music-detail-muted">发行时间：2024-05-09</p>
+                <a
+                  class="inline-flex items-center gap-2 text-sm tracking-[0.08em] text-primary hover:underline"
+                  href="https://y.qq.com/n/ryqq_v2/albumDetail/002HgJfp494Uax"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Icon name="lucide:external-link" class="w-4 h-4" />
+                  查看专辑页面
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="music-track-list">
             <a
-              class="btn btn-primary gap-2"
-              id="featured-link"
-              href="https://music.apple.com/cn/artist/the-beatles/136975"
+              class="music-track-item bg-base-100/60 rounded-xl p-4 flex items-center justify-between gap-4 hover:bg-base-100 transition-colors"
+              href="https://i.y.qq.com/v8/playsong.html?songid=486451866#webchat_redirect"
               target="_blank"
               rel="noreferrer"
             >
-              <Icon name="lucide:external-link" class="w-5 h-5" />
-              <span>Apple Music 上打开</span>
+              <div class="flex items-start gap-4 min-w-0">
+                <div class="music-index">01</div>
+                <div class="min-w-0 space-y-1">
+                  <p class="music-title text-lg md:text-[1.2rem] leading-snug">希望有羽毛和翅膀</p>
+                  <p class="music-meta">歌手：知更鸟 / HOYO-MiX / Chevy</p>
+                  <p class="music-detail music-detail-muted">专辑：崩坏星穹铁道-空气蛹 INSIDE</p>
+                </div>
+              </div>
+              <span class="music-go-button shrink-0">Go</span>
+            </a>
+
+            <a
+              class="music-track-item bg-base-100/60 rounded-xl p-4 flex items-center justify-between gap-4 hover:bg-base-100 transition-colors"
+              href="https://i.y.qq.com/v8/playsong.html?songid=486451796#webchat_redirect"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <div class="flex items-start gap-4 min-w-0">
+                <div class="music-index">02</div>
+                <div class="min-w-0 space-y-1">
+                  <p class="music-title text-lg md:text-[1.2rem] leading-snug">在银河中孤独摇摆</p>
+                  <p class="music-meta">歌手：知更鸟 / HOYO-MiX / Chevy</p>
+                  <p class="music-detail music-detail-muted">专辑：崩坏星穹铁道-空气蛹 INSIDE</p>
+                </div>
+              </div>
+              <span class="music-go-button shrink-0">Go</span>
+            </a>
+
+            <a
+              class="music-track-item bg-base-100/60 rounded-xl p-4 flex items-center justify-between gap-4 hover:bg-base-100 transition-colors"
+              href="https://i.y.qq.com/v8/playsong.html?songid=486451831#webchat_redirect"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <div class="flex items-start gap-4 min-w-0">
+                <div class="music-index">03</div>
+                <div class="min-w-0 space-y-1">
+                  <p class="music-title text-lg md:text-[1.2rem] leading-snug">使一颗心免于哀伤</p>
+                  <p class="music-meta">歌手：知更鸟 / HOYO-MiX / Chevy</p>
+                  <p class="music-detail music-detail-muted">专辑：崩坏星穹铁道-空气蛹 INSIDE</p>
+                </div>
+              </div>
+              <span class="music-go-button shrink-0">Go</span>
+            </a>
+
+            <a
+              class="music-track-item bg-base-100/60 rounded-xl p-4 flex items-center justify-between gap-4 hover:bg-base-100 transition-colors"
+              href="https://i.y.qq.com/v8/playsong.html?songid=486451780#webchat_redirect"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <div class="flex items-start gap-4 min-w-0">
+                <div class="music-index">04</div>
+                <div class="min-w-0 space-y-1">
+                  <p class="music-title text-lg md:text-[1.2rem] leading-snug">若我不曾见过太阳</p>
+                  <p class="music-meta">歌手：知更鸟 / HOYO-MiX / Chevy</p>
+                  <p class="music-detail music-detail-muted">专辑：崩坏星穹铁道-空气蛹 INSIDE</p>
+                </div>
+              </div>
+              <span class="music-go-button shrink-0">Go</span>
             </a>
           </div>
 
-          <!-- Player -->
-          <div class="bg-base-100/60 rounded-xl p-3">
-            <iframe
-              id="featured-iframe"
-              title="Apple Music Player"
-              allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-              frameborder="0"
-              height="175"
-              style="width:100%; max-width:100%; overflow:hidden; border-radius:12px;"
-              sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
-              src="https://embed.music.apple.com/cn/album/1/1441133180"></iframe>
-
-            <div class="alert bg-base-100/60 mt-3">
-              <Icon name="lucide:info" class="w-5 h-5" />
-              <span class="text-sm">
-                提示：稍等一会链接即可呈现~多数浏览器不允许“自动播放有声音的音乐”，需要你先点一次播放键?
-              </span>
+          <div class="bg-base-100/60 rounded-xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div>
+              <p class="music-home-label">QQ Music Homepage</p>
             </div>
+            <a class="music-home-button shrink-0" href="https://y.qq.com/" target="_blank" rel="noreferrer">
+              <Icon name="lucide:arrow-up-right" class="w-4 h-4" />
+              Visit
+            </a>
           </div>
         </div>
       </div>
     </section>
 
     <footer class="container foot muted">
-      <span>© {new Date().getFullYear()} Danny</span>
+      <span>© {new Date().getFullYear()} Li Haoxuan</span>
     </footer>
   </main>
 
   <style>
+    .music-heading,
+    .music-title {
+      font-family: "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", serif;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .music-meta {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      letter-spacing: 0.04em;
+      color: color-mix(in srgb, currentColor 72%, transparent);
+    }
+
+    .music-detail {
+      font-size: 0.88rem;
+      line-height: 1.75;
+      letter-spacing: 0.06em;
+      color: color-mix(in srgb, currentColor 78%, transparent);
+    }
+
+    .music-detail-muted {
+      color: color-mix(in srgb, currentColor 60%, transparent);
+    }
+
+    .album-highlight {
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: color-mix(in srgb, currentColor 92%, transparent);
+    }
+
+    .music-index {
+      min-width: 2.5rem;
+      padding-top: 0.1rem;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      line-height: 1.4;
+      color: color-mix(in srgb, currentColor 45%, transparent);
+    }
+
+    .music-home-label {
+      font-family: "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, currentColor 52%, transparent);
+    }
+
+    .music-go-button,
+    .music-home-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.62rem 1rem;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+      background: linear-gradient(180deg, color-mix(in srgb, currentColor 6%, transparent), transparent);
+      font-family:
+        "Didot", "Bodoni MT", "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, currentColor 84%, transparent);
+      text-decoration: none;
+      transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        background-color 180ms ease,
+        box-shadow 180ms ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    .music-go-button:hover,
+    .music-home-button:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, currentColor 18%, transparent);
+      background: linear-gradient(180deg, color-mix(in srgb, currentColor 10%, transparent), transparent);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+    }
+
+    .music-go-button {
+      min-width: 5rem;
+    }
+
+    .music-home-button {
+      min-width: 6.25rem;
+    }
+
+    .music-track-list {
+      display: grid;
+      gap: 0;
+      border-radius: 1rem;
+      overflow: hidden;
+      background: color-mix(in srgb, currentColor 3%, transparent);
+    }
+
+    .music-track-item {
+      border-radius: 0;
+      border-top: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+    }
+
+    .music-track-item:first-child {
+      border-top: none;
+    }
+
+    .text-emphasis {
+      font-weight: 650;
+      letter-spacing: 0.01em;
+      background: linear-gradient(135deg, #7fe7ea 0%, #57c7d4 45%, #4f8cff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+
     :global(html[data-theme-type="dark"]) {
       --page-bg:
         radial-gradient(1200px 600px at 20% 10%, rgba(80, 120, 255, 0.18), transparent 60%),
@@ -393,7 +597,11 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 
     :global(body) {
       background:
-        radial-gradient(620px 620px at var(--mouse-x, 50vw) var(--mouse-y, 35vh), var(--cursor-glow-a), transparent 62%),
+        radial-gradient(
+          620px 620px at var(--mouse-x, 50vw) var(--mouse-y, 35vh),
+          var(--cursor-glow-a),
+          transparent 62%
+        ),
         radial-gradient(
           920px 760px at calc(var(--mouse-x, 50vw) + 18%) calc(var(--mouse-y, 35vh) - 15%),
           var(--cursor-glow-b),
@@ -487,10 +695,11 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 
     .headline {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 6px 0 10px;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 10px 0 14px;
       color: var(--headline);
+      flex-wrap: wrap;
     }
     .badge {
       font-size: 12px;
@@ -501,16 +710,80 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
     }
     .sep {
       opacity: 0.45;
+      padding-top: 0.18rem;
     }
     .motto {
-      opacity: 0.88;
+      position: relative;
+      display: inline-block;
+      padding-left: 1rem;
+      max-width: 52ch;
+      font-family:
+        "Cormorant Garamond", "Baskerville", "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+      font-size: clamp(1rem, 1.2vw + 0.8rem, 1.34rem);
+      font-style: italic;
+      font-weight: 500;
+      line-height: 1.55;
+      letter-spacing: 0.025em;
+      color: color-mix(in srgb, currentColor 92%, transparent);
+      opacity: 0.96;
+    }
+    .motto::after {
+      content: "";
+      display: inline-block;
+      width: 0.08em;
+      height: 1em;
+      margin-left: 0.18em;
+      vertical-align: -0.08em;
+      background: currentColor;
+      opacity: 0.55;
+      animation: motto-caret-blink 1s steps(1) infinite;
+    }
+    .motto::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.18em;
+      bottom: 0.18em;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, currentColor 18%, currentColor 70%, transparent);
+      opacity: 0.32;
+    }
+
+    @keyframes motto-caret-blink {
+      0%,
+      49% {
+        opacity: 0.55;
+      }
+      50%,
+      100% {
+        opacity: 0;
+      }
     }
 
     .about {
       margin: 0;
-      line-height: 1.65;
-      color: var(--about-text);
-      max-width: 64ch;
+      max-width: 62ch;
+      font-family:
+        "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", "Noto Sans SC", serif;
+      font-size: clamp(1rem, 0.24vw + 0.96rem, 1.08rem);
+      font-weight: 500;
+      line-height: 1.8;
+      letter-spacing: 0.012em;
+      color: color-mix(in srgb, var(--about-text) 92%, var(--page-text) 8%);
+      text-wrap: pretty;
+      animation: about-rise 760ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+      animation-delay: 180ms;
+    }
+
+    @keyframes about-rise {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .cta-row {
@@ -652,11 +925,16 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
     }
     .section-text {
       margin: 0;
-      line-height: 1.8;
-      color: var(--section-text);
+      font-family:
+        "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", "Noto Sans SC", serif;
+      font-size: clamp(0.98rem, 0.18vw + 0.94rem, 1.04rem);
+      font-weight: 500;
+      line-height: 1.76;
+      letter-spacing: 0.006em;
+      color: color-mix(in srgb, var(--section-text) 92%, var(--page-text) 8%);
     }
     .intro-block {
-      max-width: 76ch;
+      max-width: 88ch;
     }
     .intro-block p {
       margin: 0;
