@@ -11,10 +11,10 @@ import Comments from "@/components/widgets/Comments.astro";
 const sites = [{ name: "Frosti Demo", url: "https://frosti.saroprock.com/" }];
 const commentPath = "/friend";
 const applyTemplate = [
-  { label: "Name", value: "Danny's Blog" },
-  { label: "Desc", value: "Cogito, ergo sum." },
-  { label: "Link", value: "https://dannyshi.pages.dev/" },
-  { label: "Avatar", value: "https://dannyshi.pages.dev/head.jpg" },
+  { label: "Name", value: "Lhx's Blog" },
+  { label: "Desc", value: "Though time may steal the years away,may your heart remain as young as yesterday." },
+  { label: "Link", value: "https://main.lhxzns.pages.dev/" },
+  { label: "Avatar", value: "https://main.lhxzns.pages.dev/head.jpg" },
 ];
 ---
 
@@ -60,6 +60,13 @@ const applyTemplate = [
               avatar="https://axi404.top/avatar/avatar.png"
               description="一只可爱小猫"
               url="https://axi404.top"
+              type="friend"
+            />
+            <FriendCard
+              name="danny"
+              avatar="https://dannyshi.pages.dev/head.jpg"
+              description=""
+              url="https://dannyshi.pages.dev/about/"
               type="friend"
             />
           </div>

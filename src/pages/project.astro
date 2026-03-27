@@ -20,7 +20,12 @@ import RepositoryCard from "@/components/mdx/RepositoryCard.astro";
         <span>Featured Projects</span>
       </h2>
 
-      <GitHubStats username="lnscq" repositoryName="Blog-s-img" showLanguages={true} showContributors={true} />
+      <GitHubStats
+        username="qinghaili142857"
+        repositoryName="Digital-IC-Learning"
+        showLanguages={true}
+        showContributors={true}
+      />
     </section>
 
     <!-- My Repositories -->
@@ -31,14 +36,14 @@ import RepositoryCard from "@/components/mdx/RepositoryCard.astro";
       </h2>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <RepositoryCard repo="lnscq/Danny-s-Blog" isPinned={true} />
-        <RepositoryCard repo="lnscq/cs224r-hw " isPinned={true} />
-        <RepositoryCard repo="lnscq/Travel-Plan" />
+        <RepositoryCard repo="qinghaili142857/Digital-IC-Learning" isPinned={true} />
+        <RepositoryCard repo="qinghaili142857/lhx-blog" isPinned={true} />
+        <RepositoryCard repo="qinghaili142857/picx-images-hosting" />
       </div>
 
       <div class="flex justify-center mt-10">
         <a
-          href="https://github.com/lnscq?tab=repositories"
+          href="https://github.com/qinghaili142857?tab=repositories"
           target="_blank"
           rel="noopener noreferrer"
           class="btn btn-outline gap-2"
@@ -49,7 +54,7 @@ import RepositoryCard from "@/components/mdx/RepositoryCard.astro";
       </div>
     </section>
 
-    <!-- Open Source Contributions -->
+    <!-- Open Source Contributions 
     <section class="py-4">
       <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
         <Icon name="lucide:git-pull-request" class="w-6 h-6 text-primary" />
@@ -89,6 +94,6 @@ import RepositoryCard from "@/components/mdx/RepositoryCard.astro";
           }
         </ul>
       </div>
-    </section>
+    </section>-->
   </MainCard>
 </BaseLayout>

@@ -7,8 +7,8 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 
 <BaseLayout title="About">
   <MainCard
-    title="About DannyShi"
-    description="Undergraduate Student of Xi'an Jiaotong University, majoring in CS."
+    title="About Haoxuan Li"
+    description="Undergraduate Student of Xi'an Jiaotong University, majoring in IC."
     textOverlay="About"
     infoIcon="lucide:user"
   >
@@ -18,19 +18,13 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
           <div
             class="w-32 h-32 md:w-40 md:h-40 rounded-xl ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden"
           >
-            <img
-              src="https://github.com/lnscq/picx-images-hosting/raw/master/danny.1ovtlr8skx.webp"
-              alt="DannyShi"
-              width="160"
-              height="160"
-              loading="eager"
-            />
+            <img src="/head.jpg" alt="Haoxuan Li" width="160" height="160" loading="eager" />
           </div>
         </div>
 
         <div class="flex-1 text-center md:text-left">
-          <h1 class="text-3xl md:text-4xl font-bold mb-2">DannyShi</h1>
-          <p class="text-xl text-base-content/80 mb-4">Computer Science & Artificial Intelligence</p>
+          <h1 class="text-3xl md:text-4xl font-bold mb-2">Haoxuan Li</h1>
+          <p class="text-xl text-base-content/80 mb-4">Integrated Circuits & Artificial Intelligence</p>
 
           <div class="flex flex-wrap gap-3 justify-center md:justify-start mb-6">
             <a
@@ -49,7 +43,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
           </div>
 
           <p class="text-base-content/80">
-            Xi'an Jiaotong University undergraduate in Computer Science, focused on embodied AI and computer vision.
+            Xi'an Jiaotong University undergraduate in Integrated Circuits, passionate about AI and Digital IC Design.
           </p>
         </div>
       </section>
@@ -60,33 +54,80 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
           <span>个人经历</span>
         </h2>
 
-        <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-3 md:p-4">
-          <div class="space-y-3">
+        <div
+          class="relative overflow-hidden rounded-3xl border border-base-content/10 bg-gradient-to-br from-base-200/80 via-base-200/40 to-base-100/70 p-4 md:p-6 shadow-sm"
+        >
+          <div
+            class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,oklch(0.72_0.16_240_/_0.16),transparent_32%),radial-gradient(circle_at_bottom_left,oklch(0.78_0.14_80_/_0.14),transparent_30%)]"
+          >
+          </div>
+
+          <div class="relative grid gap-4">
             <article
-              class="rounded-xl border border-base-content/10 bg-base-100/80 p-4 md:p-5 border-l-4 border-l-primary"
+              class="group rounded-2xl border border-primary/15 bg-base-100/80 p-5 shadow-[0_18px_50px_-28px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1"
             >
-              <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                <Icon name="lucide:graduation-cap" class="w-5 h-5 text-primary" />
-                <span>教育背景</span>
-              </h3>
-              <p class="text-base-content/80 text-sm leading-6">
-                西安交通大学少年班（2023.09 - 2025.07），随后进入微电子科学与工程专业（2025.09 - 至今）。
-              </p>
+              <div class="flex items-start gap-4">
+                <div
+                  class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/12 text-primary ring-1 ring-primary/20"
+                >
+                  <Icon name="lucide:graduation-cap" class="h-5 w-5" />
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="mb-3 flex items-center justify-between gap-3">
+                    <h3 class="profile-card-title text-lg font-semibold text-base-content">教育背景</h3>
+                    <span
+                      class="rounded-full border border-primary/15 bg-primary/8 px-3 py-1 text-xs font-medium tracking-wide text-primary"
+                    >
+                      EDUCATION
+                    </span>
+                  </div>
+                  <div class="grid gap-3 md:grid-cols-2">
+                    <div class="rounded-2xl border border-base-content/8 bg-base-200/55 p-4">
+                      <p class="text-xs uppercase tracking-[0.24em] text-base-content/45">2023.09 - 2025.07</p>
+                      <p class="profile-card-text mt-2 text-[0.98rem] leading-7 text-base-content/82">
+                        西安交通大学少年班
+                      </p>
+                    </div>
+                    <div class="rounded-2xl border border-base-content/8 bg-base-200/55 p-4">
+                      <p class="text-xs uppercase tracking-[0.24em] text-base-content/45">2025.09 - Present</p>
+                      <p class="profile-card-text mt-2 text-[0.98rem] leading-7 text-base-content/82">
+                        进入微电子科学与工程专业继续学习。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </article>
 
             <article
-              class="rounded-xl border border-base-content/10 bg-base-100/80 p-4 md:p-5 border-l-4 border-l-secondary"
+              class="group rounded-2xl border border-secondary/15 bg-base-100/80 p-5 shadow-[0_18px_50px_-28px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1"
             >
-              <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                <Icon name="lucide:flask-conical" class="w-5 h-5 text-secondary" />
-                <span>科研经历</span>
-              </h3>
-              <p class="text-base-content/80 text-sm leading-6">
-                西安交通大学人工智能与机器人研究所科研实习（2025.04 - 至今），研究方向为扩散与 Flow Matching
-                图像生成模型的在线强化学习优化。
-              </p>
+              <div class="flex items-start gap-4">
+                <div
+                  class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary/12 text-secondary ring-1 ring-secondary/20"
+                >
+                  <Icon name="lucide:flask-conical" class="h-5 w-5" />
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="mb-3 flex items-center justify-between gap-3">
+                    <h3 class="profile-card-title text-lg font-semibold text-base-content">科研经历</h3>
+                    <span
+                      class="rounded-full border border-secondary/15 bg-secondary/8 px-3 py-1 text-xs font-medium tracking-wide text-secondary"
+                    >
+                      RESEARCH
+                    </span>
+                  </div>
+                  <div class="rounded-2xl border border-base-content/8 bg-base-200/55 p-4">
+                    <p class="text-xs uppercase tracking-[0.24em] text-base-content/45">2025.11 - Present</p>
+                    <p class="profile-card-text mt-2 text-[0.98rem] leading-8 text-base-content/82">
+                      西安交通大学人工智能与机器人研究所科研实习，围绕高性能处理器架构、深度学习硬件加速器设计，以及复杂场景下的人机具身交互与智能空间构建展开研究。
+                    </p>
+                  </div>
+                </div>
+              </div>
             </article>
 
+            <!--
             <article
               class="rounded-xl border border-base-content/10 bg-base-100/80 p-4 md:p-5 border-l-4 border-l-accent"
             >
@@ -99,22 +140,63 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
                 在审），提出双分支在线强化学习框架，提升可控性与生成质量。
               </p>
             </article>
+            -->
 
             <article
-              class="rounded-xl border border-base-content/10 bg-base-100/80 p-4 md:p-5 border-l-4 border-l-info"
+              class="group rounded-2xl border border-info/15 bg-base-100/80 p-5 shadow-[0_18px_50px_-28px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1"
             >
-              <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                <Icon name="lucide:trophy" class="w-5 h-5 text-info" />
-                <span>竞赛经历</span>
-              </h3>
-              <p class="text-base-content/80 text-sm leading-6">
-                RoboCup Vision Challenge（3D 目标识别，2026）队长；蓝桥杯全国软件和信息技术专业人才大赛 C/C++
-                组全国三等奖（2025）。
-              </p>
+              <div class="flex items-start gap-4">
+                <div
+                  class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-info/12 text-info ring-1 ring-info/20"
+                >
+                  <Icon name="lucide:trophy" class="h-5 w-5" />
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="mb-3 flex items-center justify-between gap-3">
+                    <h3 class="profile-card-title text-lg font-semibold text-base-content">获得荣誉</h3>
+                    <span
+                      class="rounded-full border border-info/15 bg-info/8 px-3 py-1 text-xs font-medium tracking-wide text-info"
+                    >
+                      HONORS
+                    </span>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="rounded-2xl border border-base-content/8 bg-base-200/55 p-4">
+                      <p class="profile-card-text text-[0.98rem] leading-7 text-base-content/82">
+                        第十六届全国大学生物理学术竞赛（CUPT）西北赛区特等奖
+                      </p>
+                    </div>
+                    <div class="rounded-2xl border border-base-content/8 bg-base-200/55 p-4">
+                      <p class="profile-card-text text-[0.98rem] leading-7 text-base-content/82">
+                        第十一届全国大学生物理实验竞赛（创新）国家一等奖
+                      </p>
+                    </div>
+                    <div class="rounded-2xl border border-base-content/8 bg-base-200/55 p-4">
+                      <p class="profile-card-text text-[0.98rem] leading-7 text-base-content/82">
+                        中国国际大学生创新大赛暨创新创业教育工作表彰大会获奖学生代表
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </article>
           </div>
         </div>
       </section>
+
+      <style>
+        .profile-card-text {
+          font-family: "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", serif;
+        }
+
+        .profile-card-title {
+          letter-spacing: 0.02em;
+        }
+
+        .profile-card-text {
+          letter-spacing: 0.01em;
+        }
+      </style>
 
       <section>
         <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
@@ -122,7 +204,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
           <span>GitHub Stats</span>
         </h2>
 
-        <GitHubStats username="lnscq" showLanguages={false} showCommitGraph={true} />
+        <GitHubStats username="qinghaili142857" showLanguages={false} showCommitGraph={true} />
       </section>
 
       <section>
@@ -135,14 +217,17 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
           {
             [
               { name: "Git", icon: "simple-icons:git", color: "oklch(0.7 0.2 30)" },
-              { name: "C++", icon: "simple-icons:cplusplus", color: "oklch(0.6 0.2 240)" },
+              { name: "C", icon: "simple-icons:c", color: "oklch(0.63 0.16 245)" },
+              { name: "C#", icon: "simple-icons:sharp", color: "oklch(0.58 0.2 310)" },
+              { name: "Verilog", icon: "lucide:binary", color: "oklch(0.72 0.16 220)" },
               { name: "Python", icon: "simple-icons:python", color: "oklch(0.7 0.2 250)" },
               { name: "Linux", icon: "simple-icons:linux", color: "oklch(0.7 0.2 110)" },
               { name: "Ubuntu", icon: "simple-icons:ubuntu", color: "oklch(0.7 0.2 40)" },
-              { name: "OpenCV", icon: "simple-icons:opencv", color: "oklch(0.65 0.22 260)" },
-              { name: "PyTorch", icon: "simple-icons:pytorch", color: "oklch(0.7 0.25 25)" },
               { name: "Astro", icon: "simple-icons:astro", color: "oklch(0.75 0.25 290)" },
-              { name: "TypeScript", icon: "simple-icons:typescript", color: "oklch(0.7 0.2 250)" },
+              { name: "Vivado", icon: "lucide:cpu", color: "oklch(0.68 0.18 85)" },
+              { name: "COMSOL", icon: "lucide:atom", color: "oklch(0.72 0.16 200)" },
+              { name: "MATLAB", icon: "lucide:calculator", color: "oklch(0.72 0.22 55)" },
+              { name: "PyTorch", icon: "simple-icons:pytorch", color: "oklch(0.7 0.25 25)" },
             ].map((tech) => (
               <div class="flex flex-col items-center justify-center p-4 bg-base-200 rounded-lg hover:bg-base-300 transition-colors">
                 <div class="text-3xl mb-2" style={`color: ${tech.color}`}>
@@ -167,18 +252,23 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
               [
                 {
                   date: "2026",
-                  title: "RoboCup Vision Challenge",
-                  desc: "Led 3D object recognition development as team captain, covering planning, modeling, and deployment in a simulation pipeline.",
+                  title: "Embodied Intelligence Research Internship",
+                  desc: "Worked on embodied intelligence research at AIR, focusing on human-machine embodied interaction in complex environments.",
                 },
                 {
-                  date: "2025.11",
-                  title: "Paper Submission",
-                  desc: "Submitted a flow-matching online RL paper focused on controllable text-to-image generation at test time.",
+                  date: "2026",
+                  title: "AI Chip Research Internship",
+                  desc: "Joined the Institute of Artificial Intelligence and Robotics for research on AI chips and hardware accelerator design.",
                 },
                 {
                   date: "2025",
-                  title: "Lanqiao Cup",
-                  desc: "Won Third Prize in the national C/C++ group and ranked among top participants nationwide.",
+                  title: "Physics Experiment Competition",
+                  desc: "Prepared for and competed in the National Physics Experiment Competition, eventually winning the national first prize in the innovation track.",
+                },
+                {
+                  date: "2025",
+                  title: "CUPT",
+                  desc: "Focused on the China Undergraduate Physics Tournament and won the Northwest regional special prize.",
                 },
               ].map((item, i) => (
                 <div class="relative flex gap-4">

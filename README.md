@@ -4,13 +4,18 @@
 
 ## 技术栈
 
-- Astro 5（静态站点与内容渲染）
-- TypeScript
-- Tailwind CSS + daisyUI（样式与主题）
-- MDX/Markdown（内容写作）
-- Pagefind（站内搜索索引）
-- RSS/Sitemap（订阅与 SEO）
-- Expressive Code / Shiki 主题（代码高亮）
+- Git
+- C
+- C#
+- Verilog
+- Python
+- Linux
+- Ubuntu
+- Astro
+- Vivado
+- COMSOL
+- MATLAB
+- PyTorch
 
 ## 功能概览
 

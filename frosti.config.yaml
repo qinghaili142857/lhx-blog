@@ -44,6 +44,11 @@ site:
           href: /blog/category/notebook
           svg: "material-symbols:menu-book-outline-rounded"
           target: _self
+        - id: novel
+          text: Novel
+          href: /blog/category/Novel
+          svg: "material-symbols:auto-stories-outline-rounded"
+          target: _self
         # 子菜单项配置
     - id: project
       text: Project
