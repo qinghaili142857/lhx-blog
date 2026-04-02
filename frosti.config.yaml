@@ -55,6 +55,11 @@ site:
       href: /project
       svg: "material-symbols:code-blocks-outline"
       target: _self
+    - id: moments
+      text: Moments
+      href: /moments
+      svg: "material-symbols:photo-library-outline-rounded"
+      target: _self
     - id: friend
       text: Friend
       href: /friend

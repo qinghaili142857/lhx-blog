@@ -1,0 +1,477 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Icon } from "astro-icon/components";
+import dayjs from "@/utils/dayjs";
+import { getAllMoments } from "@/utils/momentUtils";
+
+export async function getStaticPaths() {
+  const moments = await getAllMoments();
+  return moments.map((moment) => ({
+    params: { slug: moment.slug },
+    props: { moment },
+  }));
+}
+
+const { moment } = Astro.props;
+
+if (!moment) {
+  return Astro.redirect("/404");
+}
+
+const moments = await getAllMoments();
+const related = moments.filter((item) => item.slug !== moment.slug).slice(0, 3);
+const { Content } = await moment.render();
+---
+
+<BaseLayout title={moment.data.title} description={moment.data.description}>
+  <section class="moment-detail">
+    <a class="back-link" href="/moments">
+      <Icon name="lucide:arrow-left" class="w-4 h-4" />
+      <span>Back to Moments</span>
+    </a>
+
+    <article class={`detail-hero tone-${moment.data.accent}`}>
+      <div class="detail-copy">
+        <span class="detail-badge">{moment.data.badge}</span>
+        <h1>{moment.data.title}</h1>
+        <p>{moment.data.description}</p>
+
+        <div class="detail-meta">
+          <span><Icon name="lucide:clock-3" class="w-4 h-4" />{dayjs(moment.data.pubDate).format("YYYY-MM-DD HH:mm")}</span>
+          {moment.data.location && <span><Icon name="lucide:map-pin" class="w-4 h-4" />{moment.data.location}</span>}
+          <span><Icon name={moment.data.icon} class="w-4 h-4" />{moment.data.type}</span>
+          {moment.data.music && <span><Icon name="lucide:music-4" class="w-4 h-4" />{moment.data.music}</span>}
+        </div>
+      </div>
+
+      {moment.data.cover && (
+        <div class="detail-cover">
+          <button
+            class={`cover-open ${moment.data.type === "Live" ? "is-live-cover" : ""}`}
+            type="button"
+            data-lightbox-src={moment.data.cover}
+            data-lightbox-alt={moment.data.title}
+          >
+            <img src={moment.data.cover} alt={moment.data.title} loading="lazy" />
+          </button>
+          {moment.data.duration && <span class="corner-tag">{moment.data.duration}</span>}
+          {moment.data.type === "Live" && (
+            <span class="corner-tag">
+              <Icon name="lucide:circle-play" class="w-3.5 h-3.5" />
+              Live
+            </span>
+          )}
+        </div>
+      )}
+    </article>
+
+    <section class="detail-grid">
+      <div class="detail-main">
+        {moment.data.noteBody && (
+          <section class="surface note-panel">
+            <span class="panel-eyebrow">{moment.data.noteTitle}</span>
+            <p>{moment.data.noteBody}</p>
+          </section>
+        )}
+
+        {moment.data.gallery && (
+          <section class="surface">
+            <div class="section-head">
+              <h2>Moment Gallery</h2>
+              <span>{moment.data.gallery.length} frames</span>
+            </div>
+            <div class="gallery-grid">
+              {moment.data.gallery.map((image: string) => (
+                <button class="gallery-open" type="button" data-lightbox-src={image} data-lightbox-alt={moment.data.title}>
+                  <img src={image} alt={moment.data.title} loading="lazy" />
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section class="surface prose-panel">
+          <div class="section-head">
+            <h2>Extended Note</h2>
+            <span>{moment.data.mood}</span>
+          </div>
+          <div class="prose max-w-none prose-headings:scroll-mt-20 prose-img:rounded-xl prose-img:mx-auto">
+            <Content />
+          </div>
+        </section>
+      </div>
+
+      <aside class="detail-side">
+        <section class="surface side-panel">
+          <div class="section-head">
+            <h2>Publish Card</h2>
+          </div>
+          <div class="mini-stats">
+            <span><Icon name="lucide:heart" class="w-4 h-4" />18 Likes</span>
+            <span><Icon name="lucide:message-circle" class="w-4 h-4" />6 Replies</span>
+            <span><Icon name="lucide:bookmark" class="w-4 h-4" />Saved</span>
+          </div>
+        </section>
+
+        <section class="surface side-panel">
+          <div class="section-head">
+            <h2>More Moments</h2>
+          </div>
+          <div class="related-list">
+            {related.map((item) => (
+              <a class="related-card" href={`/moments/${item.slug}`}>
+                <strong>{item.data.title}</strong>
+                <span>{dayjs(item.data.pubDate).format("MMM DD · HH:mm")}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      </aside>
+    </section>
+
+    <dialog class="lightbox" id="moment-lightbox">
+      <button class="lightbox-close" type="button" aria-label="Close lightbox">
+        <Icon name="lucide:x" class="w-5 h-5" />
+      </button>
+      <img class="lightbox-image" alt="" />
+    </dialog>
+  </section>
+
+  <script is:inline>
+    document.addEventListener("astro:page-load", () => {
+      const lightbox = document.getElementById("moment-lightbox");
+      const lightboxImage = lightbox?.querySelector(".lightbox-image");
+      const closeButton = lightbox?.querySelector(".lightbox-close");
+      const openers = Array.from(document.querySelectorAll(".cover-open, .gallery-open"));
+      const liveCover = document.querySelector(".is-live-cover");
+
+      openers.forEach((button) => {
+        if (button.dataset.lightboxBound === "1") return;
+        button.dataset.lightboxBound = "1";
+        button.addEventListener("click", () => {
+          if (!(lightbox instanceof HTMLDialogElement) || !(lightboxImage instanceof HTMLImageElement)) return;
+          lightboxImage.src = button.dataset.lightboxSrc || "";
+          lightboxImage.alt = button.dataset.lightboxAlt || "";
+          lightbox.showModal();
+        });
+      });
+
+      if (closeButton && lightbox instanceof HTMLDialogElement) {
+        if (closeButton.dataset.dialogBound !== "1") {
+          closeButton.dataset.dialogBound = "1";
+          closeButton.addEventListener("click", () => lightbox.close());
+        }
+        if (lightbox.dataset.dialogBound !== "1") {
+          lightbox.dataset.dialogBound = "1";
+          lightbox.addEventListener("click", (event) => {
+            if (event.target === lightbox) lightbox.close();
+          });
+        }
+      }
+
+      if (liveCover && liveCover.dataset.liveBound !== "1") {
+        liveCover.dataset.liveBound = "1";
+        liveCover.addEventListener("pointermove", (event) => {
+          const rect = liveCover.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width - 0.5) * 8;
+          const y = ((event.clientY - rect.top) / rect.height - 0.5) * -8;
+          liveCover.style.setProperty("--live-rotate-x", `${y}deg`);
+          liveCover.style.setProperty("--live-rotate-y", `${x}deg`);
+        });
+        liveCover.addEventListener("pointerleave", () => {
+          liveCover.style.setProperty("--live-rotate-x", "0deg");
+          liveCover.style.setProperty("--live-rotate-y", "0deg");
+        });
+      }
+    });
+  </script>
+
+  <style>
+    :global(html[data-theme-type="light"]) .moment-detail {
+      --bg: linear-gradient(180deg, rgba(253, 248, 242, 0.94), rgba(245, 241, 237, 0.9));
+      --card: rgba(255, 252, 248, 0.78);
+      --border: rgba(66, 48, 31, 0.09);
+      --text: rgba(34, 27, 21, 0.92);
+      --soft: rgba(72, 58, 44, 0.62);
+      --shadow: 0 24px 70px rgba(70, 47, 25, 0.11);
+    }
+
+    :global(html[data-theme-type="dark"]) .moment-detail {
+      --bg: linear-gradient(180deg, rgba(19, 18, 21, 0.95), rgba(11, 12, 14, 0.96));
+      --card: rgba(28, 26, 29, 0.78);
+      --border: rgba(255, 245, 235, 0.08);
+      --text: rgba(248, 241, 233, 0.94);
+      --soft: rgba(233, 220, 205, 0.64);
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+    }
+
+    .moment-detail {
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .back-link,
+    .related-card,
+    .detail-meta span,
+    .mini-stats span,
+    .corner-tag,
+    .detail-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 999px;
+    }
+
+    .back-link {
+      margin-bottom: 1rem;
+      padding: 0.8rem 1rem;
+      color: inherit;
+      text-decoration: none;
+      width: fit-content;
+    }
+
+    .detail-hero,
+    .surface {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .detail-hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .detail-copy {
+      padding: 0.5rem;
+    }
+
+    .detail-badge,
+    .corner-tag {
+      padding: 0.45rem 0.75rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    .detail-copy h1 {
+      margin: 0.85rem 0 0.8rem;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", serif;
+      font-size: clamp(2rem, 2.8vw, 3.2rem);
+      line-height: 1.08;
+    }
+
+    .detail-copy p,
+    .note-panel p {
+      margin: 0;
+      line-height: 1.9;
+      color: var(--soft);
+    }
+
+    .detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 1.3rem;
+    }
+
+    .detail-meta span,
+    .mini-stats span {
+      padding: 0.7rem 0.9rem;
+    }
+
+    .detail-cover {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      min-height: 340px;
+    }
+
+    .cover-open,
+    .gallery-open {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: zoom-in;
+    }
+
+    .detail-cover img,
+    .gallery-grid img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .is-live-cover {
+      transform: perspective(1000px) rotateX(var(--live-rotate-x, 0deg)) rotateY(var(--live-rotate-y, 0deg));
+      transform-style: preserve-3d;
+      transition: transform 280ms ease;
+    }
+
+    .is-live-cover img {
+      transform: scale(1.06);
+      transition: transform 360ms ease;
+    }
+
+    .is-live-cover:hover img {
+      transform: scale(1.1);
+    }
+
+    .detail-cover .corner-tag {
+      position: absolute;
+      right: 1rem;
+      bottom: 1rem;
+      color: white;
+      background: rgba(14, 14, 16, 0.56);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .detail-main,
+    .detail-side,
+    .related-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .surface {
+      padding: 1rem;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .section-head span,
+    .panel-eyebrow,
+    .related-card span {
+      color: var(--soft);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .gallery-grid img {
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
+    }
+
+    .panel-eyebrow {
+      display: inline-block;
+      font-size: 0.8rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .related-card {
+      padding: 0.95rem 1rem;
+      border-radius: 20px;
+      flex-direction: column;
+      align-items: flex-start;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .related-card strong {
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .lightbox {
+      width: min(92vw, 1040px);
+      border: none;
+      padding: 0;
+      background: transparent;
+    }
+
+    .lightbox::backdrop {
+      background: rgba(9, 10, 14, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .lightbox-image {
+      width: 100%;
+      max-height: 84vh;
+      object-fit: contain;
+      border-radius: 24px;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.3);
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      display: grid;
+      place-items: center;
+      z-index: 2;
+    }
+
+    .tone-aurora .detail-badge { background: color-mix(in srgb, #8aa0ff 16%, transparent); }
+    .tone-rose .detail-badge { background: color-mix(in srgb, #d48b87 16%, transparent); }
+    .tone-copper .detail-badge { background: color-mix(in srgb, #bf8c58 16%, transparent); }
+    .tone-nocturne .detail-badge { background: color-mix(in srgb, #7b95cb 16%, transparent); }
+    .tone-linen .detail-badge { background: color-mix(in srgb, #a48967 16%, transparent); }
+
+    @media (max-width: 900px) {
+      .detail-hero,
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .moment-detail {
+        border-radius: 22px;
+        padding: 0.85rem;
+      }
+
+      .detail-hero,
+      .surface {
+        border-radius: 22px;
+      }
+
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BaseLayout>

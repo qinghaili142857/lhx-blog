@@ -1,0 +1,745 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Icon } from "astro-icon/components";
+
+const formats = [
+  { id: "photo", label: "照片", icon: "lucide:image-plus", type: "Photo", badge: "Photo Drop" },
+  { id: "text", label: "文字", icon: "lucide:pen-line", type: "Sayings", badge: "Text Post" },
+  { id: "saying", label: "说说", icon: "lucide:message-square-quote", type: "Sayings", badge: "Short Saying" },
+  { id: "note", label: "笔记", icon: "lucide:notebook-pen", type: "Note", badge: "Notebook" },
+  { id: "video", label: "视频", icon: "lucide:video", type: "Video", badge: "Video Log" },
+  { id: "live", label: "实况照片", icon: "lucide:circle-play", type: "Live", badge: "Live Photo" },
+];
+---
+
+<BaseLayout title="Moments Studio" description="A polished publishing prototype for daily moments.">
+  <section class="studio-shell">
+    <div class="studio-head">
+      <a class="back-link" href="/moments">
+        <Icon name="lucide:arrow-left" class="w-4 h-4" />
+        <span>Back to Moments</span>
+      </a>
+      <div>
+        <span class="eyebrow">Publishing Prototype</span>
+        <h1>把“发一条动态”做成一个真正有质感的发布台</h1>
+        <p>这版已经具备预览、MDX 生成、JSON payload 生成，以及本地脚本落盘的开发者工作流。</p>
+      </div>
+    </div>
+
+    <div class="studio-grid">
+      <section class="panel compose-panel">
+        <div class="section-head">
+          <h2>Content Type</h2>
+          <span>Switch format</span>
+        </div>
+
+        <div class="format-grid">
+          {
+            formats.map((format, index) => (
+              <button
+                class:list={["format-chip", index === 0 && "is-active"]}
+                type="button"
+                data-format={format.id}
+                data-type={format.type}
+                data-badge={format.badge}
+              >
+                <Icon name={format.icon} class="w-4 h-4" />
+                <span>{format.label}</span>
+              </button>
+            ))
+          }
+        </div>
+
+        <div class="form-grid">
+          <label class="field wide">
+            <span>标题</span>
+            <input id="studio-title" type="text" value="把四月的光线留住" />
+          </label>
+          <label class="field">
+            <span>地点</span>
+            <input id="studio-location" type="text" value="兴庆校区操场边" />
+          </label>
+          <label class="field">
+            <span>心情 / 氛围</span>
+            <input id="studio-mood" type="text" value="晴 / 微风 / 适合出门" />
+          </label>
+          <label class="field">
+            <span>时间</span>
+            <input id="studio-date" type="datetime-local" value="2026-04-01T07:18" />
+          </label>
+          <label class="field">
+            <span>封面图</span>
+            <input id="studio-cover" type="text" value="/image/image1.jpg" />
+          </label>
+          <label class="field">
+            <span>音乐 / 标签</span>
+            <input id="studio-music" type="text" value="Robin - Hope Is the Thing With Feathers" />
+          </label>
+          <label class="field">
+            <span>Story 标题</span>
+            <input id="studio-story-title" type="text" value="晨光" />
+          </label>
+          <label class="field">
+            <span>Story 副标题</span>
+            <input id="studio-story-subtitle" type="text" value="操场边 / 06:42" />
+          </label>
+          <label class="field wide">
+            <span>描述</span>
+            <input id="studio-description" type="text" value="天气很温柔，想把一个普通却会记很久的清晨存下来。" />
+          </label>
+          <label class="field wide">
+            <span>正文</span>
+            <textarea id="studio-body" rows="8">天气比预想中温柔很多，树影和楼体的边界像被轻轻擦亮了一遍。想把这种普通却会记很久的清晨存下来。</textarea>
+          </label>
+          <label class="field wide">
+            <span>图集</span>
+            <textarea id="studio-gallery" rows="4">/image/image2.jpg
+/image/image3.png
+/image/image4.jpg</textarea>
+          </label>
+        </div>
+
+        <div class="toolbar-row">
+          <div class="mini-tools">
+            <span><Icon name="lucide:image" class="w-4 h-4" />图集</span>
+            <span><Icon name="lucide:captions" class="w-4 h-4" />封面文案</span>
+            <span><Icon name="lucide:map-pinned" class="w-4 h-4" />位置标签</span>
+            <span><Icon name="lucide:music-4" class="w-4 h-4" />配乐</span>
+          </div>
+          <div class="cta-row">
+            <button class="ghost-btn" id="copy-mdx" type="button">复制 MDX</button>
+            <button class="primary-btn" id="copy-slug" type="button">复制 Slug</button>
+            <button class="save-btn" id="save-mdx" type="button">保存为 MDX 文件</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel preview-panel">
+        <div class="section-head">
+          <h2>Live Preview</h2>
+          <span>Card output</span>
+        </div>
+
+        <article class="preview-card" id="studio-preview" data-format="photo">
+          <div class="preview-cover">
+            <img id="preview-image" src="/image/image1.jpg" alt="preview cover" />
+            <span class="preview-badge" id="preview-badge">Photo Drop</span>
+            <span class="preview-type" id="preview-type">照片</span>
+          </div>
+          <div class="preview-body">
+            <h3 id="preview-title">把四月的光线留住</h3>
+            <p id="preview-text">天气比预想中温柔很多，树影和楼体的边界像被轻轻擦亮了一遍。想把这种普通却会记很久的清晨存下来。</p>
+            <div class="preview-meta">
+              <span id="preview-location"><Icon name="lucide:map-pin" class="w-4 h-4" />兴庆校区操场边</span>
+              <span id="preview-mood"><Icon name="lucide:sparkles" class="w-4 h-4" />晴 / 微风 / 适合出门</span>
+              <span id="preview-music"><Icon name="lucide:music-4" class="w-4 h-4" />Robin - Hope Is the Thing With Feathers</span>
+            </div>
+          </div>
+        </article>
+
+        <section class="tips-card">
+          <div class="section-head compact">
+            <h3>MDX Output</h3>
+            <span id="slug-output">april-morning-light</span>
+          </div>
+          <pre class="code-output"><code id="mdx-output"></code></pre>
+        </section>
+
+        <section class="tips-card">
+          <div class="section-head compact">
+            <h3>CLI Payload</h3>
+            <button class="ghost-btn small-btn" id="copy-json" type="button">复制 JSON</button>
+          </div>
+          <pre class="code-output"><code id="json-output"></code></pre>
+        </section>
+
+        <section class="tips-card">
+          <div class="section-head compact">
+            <h3>Command Preview</h3>
+            <button class="ghost-btn small-btn" id="copy-command" type="button">复制命令</button>
+          </div>
+          <pre class="code-output"><code id="command-output"></code></pre>
+        </section>
+      </aside>
+    </div>
+  </section>
+
+  <script is:inline>
+    document.addEventListener("astro:page-load", () => {
+      const fields = {
+        title: document.getElementById("studio-title"),
+        location: document.getElementById("studio-location"),
+        mood: document.getElementById("studio-mood"),
+        date: document.getElementById("studio-date"),
+        cover: document.getElementById("studio-cover"),
+        music: document.getElementById("studio-music"),
+        storyTitle: document.getElementById("studio-story-title"),
+        storySubtitle: document.getElementById("studio-story-subtitle"),
+        description: document.getElementById("studio-description"),
+        body: document.getElementById("studio-body"),
+        gallery: document.getElementById("studio-gallery"),
+      };
+
+      const previewTitle = document.getElementById("preview-title");
+      const previewText = document.getElementById("preview-text");
+      const previewImage = document.getElementById("preview-image");
+      const previewLocation = document.getElementById("preview-location");
+      const previewMood = document.getElementById("preview-mood");
+      const previewMusic = document.getElementById("preview-music");
+      const previewCard = document.getElementById("studio-preview");
+      const previewType = document.getElementById("preview-type");
+      const previewBadge = document.getElementById("preview-badge");
+      const slugOutput = document.getElementById("slug-output");
+      const mdxOutput = document.getElementById("mdx-output");
+      const jsonOutput = document.getElementById("json-output");
+      const commandOutput = document.getElementById("command-output");
+      const copyMdx = document.getElementById("copy-mdx");
+      const copySlug = document.getElementById("copy-slug");
+      const saveMdx = document.getElementById("save-mdx");
+      const copyJson = document.getElementById("copy-json");
+      const copyCommand = document.getElementById("copy-command");
+      const chips = Array.from(document.querySelectorAll(".format-chip"));
+
+      let currentType = "Photo";
+      let currentLabel = "照片";
+      let currentBadge = "Photo Drop";
+
+      const slugify = (value) =>
+        value
+          .toLowerCase()
+          .normalize("NFKD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .replace(/-{2,}/g, "-") || "new-moment";
+
+      const dateToMdx = (value) => (value ? `${value.replace("T", " ")}:00` : "2026-04-01 00:00:00");
+
+      const galleryLines = (value) =>
+        value
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+
+      const buildPayload = () => ({
+        slug: slugify(fields.title?.value || ""),
+        title: fields.title?.value || "",
+        description: fields.description?.value || "",
+        pubDate: fields.date?.value || "",
+        type: currentType,
+        icon: "lucide:images",
+        badge: currentBadge,
+        mood: fields.mood?.value || "",
+        accent: "aurora",
+        cover: fields.cover?.value || "",
+        gallery: galleryLines(fields.gallery?.value || ""),
+        location: fields.location?.value || "",
+        music: fields.music?.value || "",
+        storyTitle: fields.storyTitle?.value || "",
+        storySubtitle: fields.storySubtitle?.value || "",
+        body: fields.body?.value || "",
+      });
+
+      const renderOutputs = () => {
+        const payload = buildPayload();
+        const frontmatter = [
+          "---",
+          `title: ${payload.title}`,
+          `description: ${payload.description}`,
+          `pubDate: ${dateToMdx(payload.pubDate)}`,
+          `type: ${payload.type}`,
+          `icon: ${payload.icon}`,
+          `badge: ${payload.badge}`,
+          `mood: ${payload.mood}`,
+          `accent: ${payload.accent}`,
+          `cover: ${payload.cover}`,
+          ...(payload.gallery.length ? ["gallery:", ...payload.gallery.map((item) => `  - ${item}`)] : []),
+          `location: ${payload.location}`,
+          `music: ${payload.music}`,
+          `storyTitle: ${payload.storyTitle}`,
+          `storySubtitle: ${payload.storySubtitle}`,
+          "---",
+          "",
+          payload.body,
+        ].join("\n");
+
+        if (slugOutput) slugOutput.textContent = payload.slug;
+        if (mdxOutput) mdxOutput.textContent = frontmatter;
+        if (jsonOutput) jsonOutput.textContent = JSON.stringify(payload, null, 2);
+        if (commandOutput) commandOutput.textContent = "npm run moment:create -- payload.json";
+
+        return { slug: payload.slug, payload, frontmatter };
+      };
+
+      const syncPreview = () => {
+        if (previewTitle && fields.title) previewTitle.textContent = fields.title.value;
+        if (previewText && fields.body) previewText.textContent = fields.body.value;
+        if (previewImage && fields.cover) previewImage.src = fields.cover.value || "/head.jpg";
+        if (previewLocation && fields.location) previewLocation.lastChild.textContent = fields.location.value;
+        if (previewMood && fields.mood) previewMood.lastChild.textContent = fields.mood.value;
+        if (previewMusic && fields.music) previewMusic.lastChild.textContent = fields.music.value;
+        if (previewType) previewType.textContent = currentLabel;
+        if (previewBadge) previewBadge.textContent = currentBadge;
+        renderOutputs();
+      };
+
+      Object.values(fields).forEach((input) => {
+        if (!input || input.dataset.syncBound === "1") return;
+        input.dataset.syncBound = "1";
+        input.addEventListener("input", syncPreview);
+      });
+
+      chips.forEach((chip) => {
+        if (chip.dataset.bound === "1") return;
+        chip.dataset.bound = "1";
+        chip.addEventListener("click", () => {
+          chips.forEach((item) => item.classList.remove("is-active"));
+          chip.classList.add("is-active");
+          currentType = chip.dataset.type || "Photo";
+          currentLabel = chip.textContent.trim();
+          currentBadge = chip.dataset.badge || "Photo Drop";
+          if (previewCard) previewCard.dataset.format = chip.dataset.format || "photo";
+          syncPreview();
+        });
+      });
+
+      const flashButton = (button, text) => {
+        if (!button) return;
+        const old = button.textContent;
+        button.textContent = text;
+        setTimeout(() => {
+          button.textContent = old;
+        }, 1600);
+      };
+
+      const copyText = async (text, button, fallback) => {
+        try {
+          await navigator.clipboard.writeText(text);
+          flashButton(button, fallback);
+        } catch (error) {
+          console.error("Copy failed", error);
+        }
+      };
+
+      const triggerDownload = (filename, text) => {
+        const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      };
+
+      const saveFile = async () => {
+        const { slug, frontmatter } = renderOutputs();
+        const filename = `${slug}.mdx`;
+
+        try {
+          if ("showSaveFilePicker" in window) {
+            const handle = await window.showSaveFilePicker({
+              suggestedName: filename,
+              types: [
+                {
+                  description: "Markdown / MDX",
+                  accept: {
+                    "text/markdown": [".mdx", ".md"],
+                  },
+                },
+              ],
+            });
+            const writable = await handle.createWritable();
+            await writable.write(frontmatter);
+            await writable.close();
+            flashButton(saveMdx, "已保存");
+            return;
+          }
+        } catch (error) {
+          console.error("Save failed, fallback to download", error);
+        }
+
+        triggerDownload(filename, frontmatter);
+        flashButton(saveMdx, "已下载");
+      };
+
+      if (copyMdx && copyMdx.dataset.bound !== "1") {
+        copyMdx.dataset.bound = "1";
+        copyMdx.addEventListener("click", () => {
+          const { frontmatter } = renderOutputs();
+          copyText(frontmatter, copyMdx, "已复制");
+        });
+      }
+
+      if (copySlug && copySlug.dataset.bound !== "1") {
+        copySlug.dataset.bound = "1";
+        copySlug.addEventListener("click", () => {
+          const { slug } = renderOutputs();
+          copyText(slug, copySlug, "已复制");
+        });
+      }
+
+      if (copyJson && copyJson.dataset.bound !== "1") {
+        copyJson.dataset.bound = "1";
+        copyJson.addEventListener("click", () => {
+          const { payload } = renderOutputs();
+          copyText(JSON.stringify(payload, null, 2), copyJson, "已复制");
+        });
+      }
+
+      if (copyCommand && copyCommand.dataset.bound !== "1") {
+        copyCommand.dataset.bound = "1";
+        copyCommand.addEventListener("click", () => {
+          copyText("npm run moment:create -- payload.json", copyCommand, "已复制");
+        });
+      }
+
+      if (saveMdx && saveMdx.dataset.bound !== "1") {
+        saveMdx.dataset.bound = "1";
+        saveMdx.addEventListener("click", () => {
+          saveFile();
+        });
+      }
+
+      syncPreview();
+    });
+  </script>
+
+  <style>
+    :global(html[data-theme-type="light"]) .studio-shell {
+      --bg: linear-gradient(180deg, rgba(253, 248, 242, 0.96), rgba(245, 241, 237, 0.9));
+      --card: rgba(255, 252, 248, 0.82);
+      --border: rgba(66, 48, 31, 0.09);
+      --text: rgba(34, 27, 21, 0.92);
+      --soft: rgba(72, 58, 44, 0.62);
+      --shadow: 0 24px 70px rgba(70, 47, 25, 0.11);
+      --accent-a: #9d6c45;
+      --accent-b: #6f90c9;
+    }
+
+    :global(html[data-theme-type="dark"]) .studio-shell {
+      --bg: linear-gradient(180deg, rgba(19, 18, 21, 0.95), rgba(11, 12, 14, 0.96));
+      --card: rgba(28, 26, 29, 0.8);
+      --border: rgba(255, 245, 235, 0.08);
+      --text: rgba(248, 241, 233, 0.94);
+      --soft: rgba(233, 220, 205, 0.64);
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+      --accent-a: #e0b37f;
+      --accent-b: #8ab0ff;
+    }
+
+    .studio-shell {
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .studio-head {
+      display: grid;
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .back-link {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.8rem 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      font-size: 0.78rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: 0.7rem;
+    }
+
+    .studio-head h1 {
+      margin: 0;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", serif;
+      font-size: clamp(2rem, 3vw, 3.1rem);
+      line-height: 1.08;
+    }
+
+    .studio-head p,
+    .preview-body p {
+      margin: 0.7rem 0 0;
+      color: var(--soft);
+      line-height: 1.8;
+    }
+
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1rem;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 1rem;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .section-head.compact {
+      margin-bottom: 0.6rem;
+    }
+
+    .section-head h2,
+    .section-head h3 {
+      margin: 0;
+      font-size: 1.08rem;
+    }
+
+    .section-head span {
+      color: var(--soft);
+    }
+
+    .format-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .format-chip,
+    .mini-tools span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.9rem 0.8rem;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--card) 94%, transparent);
+      color: inherit;
+    }
+
+    .format-chip.is-active {
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent-a) 18%, transparent), color-mix(in srgb, var(--accent-b) 18%, transparent));
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .field {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .field.wide {
+      grid-column: 1 / -1;
+    }
+
+    .field span {
+      font-size: 0.9rem;
+      color: var(--soft);
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--card) 96%, transparent);
+      color: inherit;
+      padding: 0.95rem 1rem;
+      outline: none;
+    }
+
+    .toolbar-row,
+    .mini-tools,
+    .cta-row,
+    .preview-meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-row {
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .ghost-btn,
+    .primary-btn,
+    .save-btn {
+      padding: 0.88rem 1.1rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+
+    .ghost-btn {
+      background: transparent;
+      color: inherit;
+    }
+
+    .primary-btn {
+      color: white;
+      background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+    }
+
+    .save-btn {
+      color: inherit;
+      background: color-mix(in srgb, var(--card) 96%, transparent);
+    }
+
+    .small-btn {
+      padding: 0.52rem 0.8rem;
+      font-size: 0.84rem;
+    }
+
+    .preview-panel {
+      display: grid;
+      gap: 1rem;
+      align-content: start;
+    }
+
+    .preview-card,
+    .tips-card {
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--card) 96%, transparent);
+      overflow: hidden;
+    }
+
+    .preview-card {
+      box-shadow: var(--shadow);
+    }
+
+    .preview-cover {
+      position: relative;
+      min-height: 240px;
+    }
+
+    .preview-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .preview-badge,
+    .preview-type {
+      position: absolute;
+      top: 1rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      color: white;
+      background: rgba(14, 14, 16, 0.56);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .preview-badge {
+      left: 1rem;
+    }
+
+    .preview-type {
+      right: 1rem;
+    }
+
+    .preview-body,
+    .tips-card {
+      padding: 1rem;
+    }
+
+    .preview-body h3 {
+      margin: 0 0 0.7rem;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", serif;
+      font-size: 1.35rem;
+    }
+
+    .preview-body p {
+      margin: 0 0 1rem;
+    }
+
+    .preview-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.65rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--card) 96%, transparent);
+    }
+
+    .preview-card[data-format="video"] .preview-cover::after,
+    .preview-card[data-format="live"] .preview-cover::after {
+      content: "";
+      position: absolute;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
+      width: 68px;
+      height: 68px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .preview-card[data-format="live"] .preview-cover img {
+      transform: scale(1.06);
+    }
+
+    .code-output {
+      margin: 0;
+      padding: 1rem;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(12, 14, 18, 0.92);
+      color: rgba(236, 241, 248, 0.92);
+      font-size: 0.86rem;
+      line-height: 1.7;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    @media (max-width: 960px) {
+      .studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .studio-shell,
+      .panel {
+        border-radius: 22px;
+      }
+
+      .format-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BaseLayout>

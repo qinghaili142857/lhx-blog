@@ -167,3 +167,23 @@ export interface FriendCardProps {
   url: string;
   type?: string;
 }
+
+export interface MomentEntry {
+  slug: string;
+  type: "Photo" | "Note" | "Video" | "Live" | "Sayings";
+  icon: string;
+  title: string;
+  time: string;
+  date: string;
+  mood: string;
+  text: string;
+  accent: "aurora" | "rose" | "copper" | "nocturne" | "linen";
+  badge: string;
+  cover?: string;
+  gallery?: string[];
+  duration?: string;
+  noteTitle?: string;
+  noteBody?: string;
+  location?: string;
+  music?: string;
+}

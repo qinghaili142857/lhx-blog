@@ -25,4 +25,28 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { blog };
+const moments = defineCollection({
+  type: "content",
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    type: z.enum(["Photo", "Note", "Video", "Live", "Sayings"]),
+    icon: z.string(),
+    badge: z.string(),
+    mood: z.string(),
+    accent: z.enum(["aurora", "rose", "copper", "nocturne", "linen"]),
+    cover: z.string().optional(),
+    gallery: z.array(z.string()).optional(),
+    duration: z.string().optional(),
+    noteTitle: z.string().optional(),
+    noteBody: z.string().optional(),
+    location: z.string().optional(),
+    music: z.string().optional(),
+    storyTitle: z.string().optional(),
+    storySubtitle: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { blog, moments };

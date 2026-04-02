@@ -10,7 +10,8 @@
     "search:clean": "rimraf public/pagefind",
     "search:index": "npm run build && cpy 'dist/pagefind/**' public/pagefind",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "moment:create": "node scripts/create-moment.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

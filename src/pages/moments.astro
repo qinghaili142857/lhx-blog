@@ -1,0 +1,1045 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Icon } from "astro-icon/components";
+import type { CollectionEntry } from "astro:content";
+import dayjs from "@/utils/dayjs";
+import { getAllMoments, getMomentFilters } from "@/utils/momentUtils";
+
+const feed = await getAllMoments();
+const momentFilters = getMomentFilters(feed);
+const stories = feed.slice(0, 4).map((item) => ({
+  title: item.data.storyTitle ?? item.data.title,
+  subtitle: item.data.storySubtitle ?? dayjs(item.data.pubDate).format("MMM DD"),
+  image: item.data.cover ?? item.data.gallery?.[0] ?? "/head.jpg",
+  href: `/moments/${item.slug}`,
+}));
+
+function getSummary(item: CollectionEntry<"moments">) {
+  const plain = item.body
+    .replace(/[#>*`[\]-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return plain.length > 118 ? `${plain.slice(0, 118)}...` : plain;
+}
+---
+
+<BaseLayout title="Moments" description="A polished social-style page for daily updates, notes, photos, videos, and live moments.">
+  <section class="moments-shell">
+    <section class="hero-panel">
+      <div class="hero-copy">
+        <span class="eyebrow">DAILY MOMENTS</span>
+        <h1>一个更适合装下生活碎片的界面</h1>
+        <p>
+          不是博客，也不是项目页，而是一个留给日常的空间。可以发照片、说说、笔记、视频与实况照片，让“认真生活”
+          也拥有一层克制又细腻的质感。
+        </p>
+
+        <div class="hero-meta">
+          <div class="meta-pill">
+            <Icon name="lucide:album" class="w-4 h-4" />
+            <span>多模态动态流</span>
+          </div>
+          <div class="meta-pill">
+            <Icon name="lucide:blend" class="w-4 h-4" />
+            <span>高级感日常视觉</span>
+          </div>
+          <div class="meta-pill">
+            <Icon name="lucide:smartphone" class="w-4 h-4" />
+            <span>移动端友好</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-preview">
+        <div class="ambient-card cover-card">
+          <div class="cover-overlay"></div>
+          <img src="/head.jpg" alt="Moments hero cover" loading="lazy" />
+          <div class="cover-content">
+            <span class="cover-tag">Now Editing</span>
+            <h2>把朋友圈做得更像一本生活画册</h2>
+            <p>Soft light, quiet typography, and a feed that feels alive.</p>
+          </div>
+        </div>
+
+        <div class="floating-stat glassy">
+          <span class="stat-label">Formats</span>
+          <strong>Photo / Note / Video / Live</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="stories-rail">
+      {
+        stories.map((story) => (
+          <a class="story-card" href={story.href}>
+            <img src={story.image} alt={story.title} loading="lazy" />
+            <div class="story-mask"></div>
+            <div class="story-text">
+              <strong>{story.title}</strong>
+              <span>{story.subtitle}</span>
+            </div>
+          </a>
+        ))
+      }
+    </section>
+
+    <section class="composer-panel">
+      <div class="composer-head">
+        <div class="avatar-ring">
+          <img src="/head.jpg" alt="avatar" loading="lazy" />
+        </div>
+        <div>
+          <h2>发布新的动态</h2>
+          <p>一条动态，可以是完整生活记录，也可以只是今天想说的一句话。</p>
+        </div>
+      </div>
+
+      <div class="composer-box">
+        <div class="composer-input">
+          <span class="input-badge">Draft</span>
+          <p>今天想留下些什么？可以是照片背后的故事，也可以是一句短短的心情。</p>
+        </div>
+
+        <div class="tool-grid">
+          <div class="tool-chip"><Icon name="lucide:image-plus" class="w-4 h-4" /><span>照片</span></div>
+          <div class="tool-chip"><Icon name="lucide:pen-line" class="w-4 h-4" /><span>文字</span></div>
+          <div class="tool-chip"><Icon name="lucide:message-square-quote" class="w-4 h-4" /><span>说说</span></div>
+          <div class="tool-chip"><Icon name="lucide:notebook-pen" class="w-4 h-4" /><span>笔记</span></div>
+          <div class="tool-chip"><Icon name="lucide:video" class="w-4 h-4" /><span>视频</span></div>
+          <div class="tool-chip"><Icon name="lucide:circle-play" class="w-4 h-4" /><span>实况照片</span></div>
+        </div>
+
+        <div class="composer-actions">
+          <span class="draft-hint">支持图文混排、轻笔记排版与多媒体封面呈现</span>
+          <div class="action-links">
+            <a class="studio-link" href="/moments/studio">
+              <span>发布台原型</span>
+              <Icon name="lucide:square-pen" class="w-4 h-4" />
+            </a>
+            <a class="publish-btn" href="#moments-feed">
+              <span>浏览动态流</span>
+              <Icon name="lucide:arrow-down-right" class="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="filter-bar" aria-label="Moments filters">
+      {
+        momentFilters.map((chip, index) => (
+          <button class:list={["filter-chip", index === 0 && "is-active"]} type="button" data-filter={chip}>
+            {chip}
+          </button>
+        ))
+      }
+    </section>
+
+    <section class="feed-grid" id="moments-feed">
+      {
+        feed.map((item) => (
+          <article class={`feed-card tone-${item.data.accent}`} data-type={item.data.type}>
+            <div class="feed-head">
+              <div class="feed-icon">
+                <Icon name={item.data.icon} class="w-5 h-5" />
+              </div>
+              <div class="feed-meta">
+                <span class="feed-badge">{item.data.badge}</span>
+                <h3>{item.data.title}</h3>
+                <p>{dayjs(item.data.pubDate).format("MMM DD · HH:mm")} · {item.data.mood}</p>
+              </div>
+            </div>
+
+            <div class="feed-body">
+              <p>{getSummary(item)}</p>
+
+              {item.data.cover && (
+                <button
+                  class={`media-frame media-open ${item.data.type === "Video" ? "is-video" : ""} ${item.data.type === "Live" ? "is-live" : ""}`}
+                  type="button"
+                  data-lightbox-src={item.data.cover}
+                  data-lightbox-alt={item.data.title}
+                >
+                  <img src={item.data.cover} alt={item.data.title} loading="lazy" />
+                  {item.data.type === "Video" && <span class="play-glyph"><Icon name="lucide:play" class="w-5 h-5" /></span>}
+                  {item.data.duration && <span class="video-time">{item.data.duration}</span>}
+                  {item.data.type === "Live" && (
+                    <span class="live-mark">
+                      <Icon name="lucide:circle-play" class="w-3.5 h-3.5" />
+                      Live
+                    </span>
+                  )}
+                </button>
+              )}
+
+              {item.data.gallery && (
+                <div class="gallery-grid">
+                  {item.data.gallery.map((image: string) => (
+                    <button class="gallery-tile media-open" type="button" data-lightbox-src={image} data-lightbox-alt={item.data.title}>
+                      <img src={image} alt={item.data.title} loading="lazy" />
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {item.data.noteTitle && (
+                <div class="note-surface">
+                  <span>{item.data.noteTitle}</span>
+                  <p>{item.data.noteBody}</p>
+                </div>
+              )}
+            </div>
+
+            <div class="feed-foot">
+              <span>
+                <Icon name="lucide:heart" class="w-4 h-4" />
+                18
+              </span>
+              <span>
+                <Icon name="lucide:message-circle" class="w-4 h-4" />
+                6
+              </span>
+              <span>
+                <Icon name="lucide:bookmark" class="w-4 h-4" />
+                Save
+              </span>
+              <a class="detail-link" href={`/moments/${item.slug}`}>
+                <span>Open</span>
+                <Icon name="lucide:arrow-up-right" class="w-4 h-4" />
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </section>
+
+    <dialog class="lightbox" id="moments-lightbox">
+      <button class="lightbox-close" type="button" aria-label="Close lightbox">
+        <Icon name="lucide:x" class="w-5 h-5" />
+      </button>
+      <img class="lightbox-image" alt="" />
+    </dialog>
+  </section>
+
+  <script is:inline>
+    document.addEventListener("astro:page-load", () => {
+      const chips = Array.from(document.querySelectorAll(".filter-chip"));
+      const cards = Array.from(document.querySelectorAll(".feed-card"));
+      const lightbox = document.getElementById("moments-lightbox");
+      const lightboxImage = lightbox?.querySelector(".lightbox-image");
+      const closeButton = lightbox?.querySelector(".lightbox-close");
+      const mediaButtons = Array.from(document.querySelectorAll(".media-open"));
+      const liveCards = Array.from(document.querySelectorAll(".is-live"));
+
+      chips.forEach((chip) => {
+        if (chip.dataset.momentsBound === "1") return;
+        chip.dataset.momentsBound = "1";
+
+        chip.addEventListener("click", () => {
+          const filter = chip.dataset.filter;
+          chips.forEach((item) => item.classList.remove("is-active"));
+          chip.classList.add("is-active");
+
+          cards.forEach((card) => {
+            const match = filter === "All" || card.dataset.type === filter;
+            card.classList.toggle("is-hidden", !match);
+          });
+        });
+      });
+
+      mediaButtons.forEach((button) => {
+        if (button.dataset.lightboxBound === "1") return;
+        button.dataset.lightboxBound = "1";
+
+        button.addEventListener("click", () => {
+          if (!(lightbox instanceof HTMLDialogElement) || !(lightboxImage instanceof HTMLImageElement)) return;
+          lightboxImage.src = button.dataset.lightboxSrc || "";
+          lightboxImage.alt = button.dataset.lightboxAlt || "";
+          lightbox.showModal();
+        });
+      });
+
+      if (closeButton && lightbox instanceof HTMLDialogElement) {
+        if (closeButton.dataset.dialogBound !== "1") {
+          closeButton.dataset.dialogBound = "1";
+          closeButton.addEventListener("click", () => lightbox.close());
+        }
+        if (lightbox.dataset.dialogBound !== "1") {
+          lightbox.dataset.dialogBound = "1";
+          lightbox.addEventListener("click", (event) => {
+            if (event.target === lightbox) lightbox.close();
+          });
+        }
+      }
+
+      liveCards.forEach((card) => {
+        if (card.dataset.liveBound === "1") return;
+        card.dataset.liveBound = "1";
+
+        card.addEventListener("pointermove", (event) => {
+          const rect = card.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width - 0.5) * 8;
+          const y = ((event.clientY - rect.top) / rect.height - 0.5) * -8;
+          card.style.setProperty("--live-rotate-x", `${y}deg`);
+          card.style.setProperty("--live-rotate-y", `${x}deg`);
+        });
+
+        card.addEventListener("pointerleave", () => {
+          card.style.setProperty("--live-rotate-x", "0deg");
+          card.style.setProperty("--live-rotate-y", "0deg");
+        });
+      });
+    });
+  </script>
+
+  <style>
+    :global(html[data-theme-type="light"]) .moments-shell {
+      --moments-bg:
+        radial-gradient(1200px 540px at 15% 0%, rgba(228, 196, 162, 0.38), transparent 60%),
+        radial-gradient(920px 540px at 100% 12%, rgba(168, 198, 255, 0.32), transparent 58%),
+        linear-gradient(180deg, rgba(255, 250, 246, 0.96), rgba(245, 241, 237, 0.88));
+      --card-bg: rgba(255, 252, 248, 0.74);
+      --card-strong: rgba(255, 255, 255, 0.86);
+      --card-border: rgba(66, 48, 31, 0.09);
+      --text-main: rgba(34, 27, 21, 0.92);
+      --text-soft: rgba(72, 58, 44, 0.62);
+      --shadow-main: 0 24px 70px rgba(70, 47, 25, 0.11);
+      --shadow-soft: 0 16px 36px rgba(70, 47, 25, 0.08);
+      --line-soft: rgba(66, 48, 31, 0.08);
+      --accent-main: #9d6c45;
+      --accent-sub: #6f90c9;
+      --chip-bg: rgba(255, 255, 255, 0.68);
+    }
+
+    :global(html[data-theme-type="dark"]) .moments-shell {
+      --moments-bg:
+        radial-gradient(1000px 560px at 10% 0%, rgba(153, 112, 72, 0.24), transparent 62%),
+        radial-gradient(900px 520px at 100% 18%, rgba(102, 141, 214, 0.18), transparent 58%),
+        linear-gradient(180deg, rgba(19, 18, 21, 0.95), rgba(11, 12, 14, 0.96));
+      --card-bg: rgba(28, 26, 29, 0.76);
+      --card-strong: rgba(38, 36, 40, 0.92);
+      --card-border: rgba(255, 245, 235, 0.08);
+      --text-main: rgba(248, 241, 233, 0.94);
+      --text-soft: rgba(233, 220, 205, 0.64);
+      --shadow-main: 0 28px 80px rgba(0, 0, 0, 0.34);
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.22);
+      --line-soft: rgba(255, 245, 235, 0.08);
+      --accent-main: #e0b37f;
+      --accent-sub: #8ab0ff;
+      --chip-bg: rgba(255, 255, 255, 0.04);
+    }
+
+    .moments-shell {
+      color: var(--text-main);
+      background: var(--moments-bg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-main);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 32px;
+      padding: clamp(1rem, 2vw, 1.5rem);
+      overflow: hidden;
+    }
+
+    .hero-panel {
+      display: grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 1.25rem;
+      align-items: stretch;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-copy,
+    .composer-panel,
+    .filter-bar,
+    .story-card,
+    .feed-card,
+    .glassy {
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .hero-copy {
+      border-radius: 28px;
+      padding: clamp(1.4rem, 3vw, 2rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-copy::after {
+      content: "";
+      position: absolute;
+      inset: auto -12% -28% auto;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, color-mix(in srgb, var(--accent-main) 24%, transparent), transparent 68%);
+      filter: blur(10px);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      font-size: 0.78rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 0.9rem;
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", serif;
+      font-size: clamp(2rem, 3vw, 3.3rem);
+      line-height: 1.08;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-copy p {
+      margin: 1rem 0 0;
+      max-width: 40rem;
+      font-size: 1rem;
+      line-height: 1.9;
+      color: var(--text-soft);
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .meta-pill,
+    .tool-chip,
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: var(--chip-bg);
+      color: var(--text-main);
+    }
+
+    .meta-pill {
+      padding: 0.72rem 1rem;
+      font-size: 0.92rem;
+    }
+
+    .hero-preview {
+      position: relative;
+      min-height: 100%;
+    }
+
+    .cover-card {
+      position: relative;
+      min-height: 360px;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: var(--shadow-main);
+    }
+
+    .cover-card img,
+    .media-frame img,
+    .story-card img,
+    .gallery-grid img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cover-overlay,
+    .story-mask {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 15%, rgba(8, 8, 10, 0.2) 46%, rgba(8, 8, 10, 0.72) 100%);
+    }
+
+    .cover-content {
+      position: absolute;
+      inset: auto 1.4rem 1.4rem;
+      color: white;
+      z-index: 1;
+    }
+
+    .cover-content h2 {
+      margin: 0.75rem 0 0.5rem;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", serif;
+      font-size: clamp(1.4rem, 2vw, 2rem);
+      line-height: 1.15;
+    }
+
+    .cover-content p,
+    .story-text span {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.7;
+    }
+
+    .cover-tag,
+    .feed-badge,
+    .input-badge,
+    .live-mark,
+    .video-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.42rem 0.72rem;
+    }
+
+    .cover-tag {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .floating-stat {
+      position: absolute;
+      right: 1rem;
+      bottom: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 18px;
+      width: min(240px, calc(100% - 2rem));
+    }
+
+    .stat-label {
+      display: block;
+      font-size: 0.74rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 0.35rem;
+    }
+
+    .stories-rail {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .story-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      min-height: 180px;
+      transition:
+        transform 220ms ease,
+        border-color 220ms ease;
+      text-decoration: none;
+    }
+
+    .story-card:hover,
+    .feed-card:hover,
+    .publish-btn:hover,
+    .filter-chip:hover,
+    .studio-link:hover {
+      transform: translateY(-3px);
+    }
+
+    .story-text {
+      position: absolute;
+      inset: auto 1rem 1rem;
+      z-index: 1;
+      display: grid;
+      gap: 0.18rem;
+      color: white;
+    }
+
+    .composer-panel {
+      border-radius: 28px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .composer-head {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .composer-head h2 {
+      margin: 0 0 0.25rem;
+      font-size: 1.2rem;
+    }
+
+    .composer-head p,
+    .feed-meta p,
+    .draft-hint {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    .avatar-ring {
+      width: 56px;
+      height: 56px;
+      padding: 2px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent-main), var(--accent-sub));
+      flex-shrink: 0;
+    }
+
+    .avatar-ring img {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      object-fit: cover;
+    }
+
+    .composer-box {
+      display: grid;
+      gap: 1rem;
+      border-radius: 22px;
+      padding: 1rem;
+      background: var(--card-strong);
+      border: 1px solid var(--line-soft);
+    }
+
+    .composer-input {
+      border-radius: 20px;
+      padding: 1rem 1.05rem;
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--card-bg) 82%, transparent), transparent);
+    }
+
+    .composer-input p {
+      margin: 0.8rem 0 0;
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text-soft);
+    }
+
+    .input-badge {
+      background: color-mix(in srgb, var(--accent-main) 16%, transparent);
+      color: var(--text-main);
+      border: 1px solid color-mix(in srgb, var(--accent-main) 22%, transparent);
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .tool-chip {
+      justify-content: center;
+      padding: 0.95rem 0.7rem;
+      font-size: 0.92rem;
+    }
+
+    .composer-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .action-links {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .publish-btn,
+    .studio-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.88rem 1.1rem;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: transform 220ms ease;
+    }
+
+    .publish-btn {
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent-main), var(--accent-sub));
+      box-shadow: 0 16px 32px color-mix(in srgb, var(--accent-main) 26%, transparent);
+    }
+
+    .studio-link {
+      color: var(--text-main);
+      background: color-mix(in srgb, var(--card-strong) 90%, transparent);
+      border: 1px solid var(--line-soft);
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      border-radius: 999px;
+      padding: 0.7rem;
+      margin-bottom: 1rem;
+    }
+
+    .filter-chip {
+      padding: 0.78rem 1rem;
+      cursor: pointer;
+      transition:
+        transform 220ms ease,
+        background-color 220ms ease,
+        border-color 220ms ease;
+    }
+
+    .filter-chip.is-active {
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent-main) 18%, transparent), color-mix(in srgb, var(--accent-sub) 18%, transparent));
+      border-color: color-mix(in srgb, var(--accent-main) 20%, var(--card-border));
+    }
+
+    .feed-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .feed-card {
+      display: grid;
+      gap: 1rem;
+      border-radius: 28px;
+      padding: 1.15rem;
+      transition:
+        transform 220ms ease,
+        opacity 220ms ease,
+        border-color 220ms ease;
+    }
+
+    .feed-card.is-hidden {
+      display: none;
+    }
+
+    .feed-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+    }
+
+    .feed-icon {
+      width: 2.8rem;
+      height: 2.8rem;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      background: color-mix(in srgb, var(--accent-main) 13%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent-main) 18%, transparent);
+    }
+
+    .feed-meta {
+      display: grid;
+      gap: 0.3rem;
+    }
+
+    .feed-meta h3 {
+      margin: 0;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Times New Roman", "Noto Serif SC", serif;
+      font-size: 1.28rem;
+      line-height: 1.2;
+    }
+
+    .feed-badge {
+      width: fit-content;
+      background: color-mix(in srgb, var(--accent-main) 16%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent-main) 18%, transparent);
+      color: var(--text-main);
+    }
+
+    .feed-body {
+      display: grid;
+      gap: 0.95rem;
+    }
+
+    .feed-body p {
+      margin: 0;
+      line-height: 1.9;
+      color: var(--text-soft);
+      text-wrap: pretty;
+    }
+
+    .media-frame {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      min-height: 290px;
+      background: rgba(0, 0, 0, 0.08);
+      border: none;
+      padding: 0;
+      cursor: zoom-in;
+      transform-style: preserve-3d;
+      transition: transform 260ms ease, box-shadow 260ms ease;
+    }
+
+    .media-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 42%, rgba(0, 0, 0, 0.26) 100%);
+      pointer-events: none;
+    }
+
+    .is-video::before {
+      content: "";
+      position: absolute;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
+      width: 68px;
+      height: 68px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1;
+    }
+
+    .play-glyph {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      width: 68px;
+      height: 68px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: transform 240ms ease, background-color 240ms ease;
+    }
+
+    .is-video:hover .play-glyph {
+      transform: translate(-50%, -50%) scale(1.08);
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .is-live {
+      transform: perspective(1000px) rotateX(var(--live-rotate-x, 0deg)) rotateY(var(--live-rotate-y, 0deg));
+    }
+
+    .is-live img {
+      transform: scale(1.04);
+      transition: transform 360ms ease;
+    }
+
+    .is-live:hover img {
+      transform: scale(1.1);
+    }
+
+    .video-time,
+    .live-mark {
+      position: absolute;
+      z-index: 2;
+      color: white;
+      background: rgba(14, 14, 16, 0.56);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .video-time {
+      right: 1rem;
+      bottom: 1rem;
+    }
+
+    .live-mark {
+      top: 1rem;
+      left: 1rem;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+
+    .gallery-tile {
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: zoom-in;
+    }
+
+    .gallery-grid img {
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
+      min-height: 110px;
+    }
+
+    .note-surface {
+      padding: 1rem;
+      border-radius: 20px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent-main) 8%, transparent), transparent);
+      border: 1px solid var(--line-soft);
+    }
+
+    .note-surface span {
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+    }
+
+    .feed-foot {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding-top: 0.2rem;
+      color: var(--text-soft);
+    }
+
+    .feed-foot span,
+    .detail-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.42rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--card-strong) 92%, transparent);
+      border: 1px solid var(--line-soft);
+    }
+
+    .detail-link {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .lightbox {
+      width: min(92vw, 1040px);
+      border: none;
+      padding: 0;
+      background: transparent;
+    }
+
+    .lightbox::backdrop {
+      background: rgba(9, 10, 14, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .lightbox-image {
+      width: 100%;
+      max-height: 84vh;
+      object-fit: contain;
+      border-radius: 24px;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.3);
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      display: grid;
+      place-items: center;
+      z-index: 2;
+    }
+
+    .tone-aurora .feed-icon,
+    .tone-aurora .feed-badge {
+      background: color-mix(in srgb, #8aa0ff 16%, transparent);
+      border-color: color-mix(in srgb, #8aa0ff 24%, transparent);
+    }
+
+    .tone-rose .feed-icon,
+    .tone-rose .feed-badge {
+      background: color-mix(in srgb, #d48b87 16%, transparent);
+      border-color: color-mix(in srgb, #d48b87 24%, transparent);
+    }
+
+    .tone-copper .feed-icon,
+    .tone-copper .feed-badge {
+      background: color-mix(in srgb, #bf8c58 16%, transparent);
+      border-color: color-mix(in srgb, #bf8c58 24%, transparent);
+    }
+
+    .tone-nocturne .feed-icon,
+    .tone-nocturne .feed-badge {
+      background: color-mix(in srgb, #7b95cb 16%, transparent);
+      border-color: color-mix(in srgb, #7b95cb 24%, transparent);
+    }
+
+    .tone-linen .feed-icon,
+    .tone-linen .feed-badge {
+      background: color-mix(in srgb, #a48967 16%, transparent);
+      border-color: color-mix(in srgb, #a48967 24%, transparent);
+    }
+
+    @media (max-width: 1080px) {
+      .tool-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .stories-rail {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .hero-panel,
+      .feed-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cover-card {
+        min-height: 300px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .moments-shell {
+        border-radius: 24px;
+        padding: 0.9rem;
+      }
+
+      .hero-copy,
+      .composer-panel,
+      .feed-card {
+        border-radius: 22px;
+      }
+
+      .stories-rail,
+      .tool-grid,
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .composer-actions {
+        align-items: stretch;
+      }
+
+      .publish-btn,
+      .studio-link {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .filter-bar {
+        border-radius: 22px;
+      }
+
+      .filter-chip {
+        flex: 1 1 calc(50% - 0.7rem);
+        justify-content: center;
+      }
+    }
+  </style>
+</BaseLayout>
