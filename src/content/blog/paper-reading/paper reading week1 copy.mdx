@@ -1,0 +1,156 @@
+---
+title: "Triangel"
+description: "2026.5"
+pubDate: "May 29, 2026"
+image: "https://img.130923.xyz/pic/2026/1780069745400-mh2v6f.jpg"
+categories:
+  - Paper Reading
+tags:
+  - temporal prefetching
+  - computer architecture
+---
+import Info from "@/components/mdx/Info.astro";
+
+
+# 论文信息 
+>[Arxiv ID](https://doi.org/10.48550/arXiv.2406.10627)
+
+
+---
+
+# Triangel: A High-Performance, Accurate, Timely On-Chip Temporal Prefetcher
+
+## 论文信息
+
+- **作者**: Sam Ainsworth (University of Edinburgh), Lev Mukhanov (Queen Mary University of London)
+- **发表会议**: ISCA 2024
+- **关键词**: temporal prefetching, on-chip prefetcher, Markov table, confidence sampling, cache partitioning
+
+---
+
+## 1. 研究背景与问题
+
+Temporal prefetching 通过记录并重放地址对之间的历史关联来预测未来访问。Arm 的 Cortex-X1、A78 等处理器已部署相关 prefetcher（Correlated Miss Chaining）。论文指出，现有最先进的 on-chip temporal prefetcher Triage（MICRO 2019, TC 2022）存在设计不一致和实现不可行的问题。具体包括：
+
+- Markov table 元数据格式要求 32 位内压缩两个地址，依赖 lookup table (LUT) 重建完整地址，但 LUT 的逆向查找和容量问题导致实现困难。
+- 索引与关联度设计不明确，访问延迟过高。
+- Bloom filter 动态分区机制面积过大（200KiB），且偏向存储 prefetch metadata 而非 cache 数据。
+- HawkEye 替换策略在 prefetch 场景下收益有限。
+
+论文提出两个核心问题：
+1. Triage 的设计是否真正适用于真实处理器？
+2. 能否通过简单改进提升 prefetch 的 timeliness、accuracy 和 coverage？
+
+---
+
+## 2. Baseline 修复与 Triangel 设计
+
+### 2.1 Triage baseline 修复
+
+作者首先解决 Triage 中的不可实现或模糊部分：
+
+- **Metadata 格式**：结合 Triage 和 Triage-ISR 方法，lookup address 使用隐式 index + 10 位 hash tag，prefetch target 直接存储 42 位（含 6 位 line offset），避免 LUT 带来的歧义和脆弱性。
+- **Associativity 与 indexing**：采用 16 路 set-associative，用 sub-set indexing 选择 cache line 内的元素位置。partition 大小变化时触发重排。
+- **Replacement policy**：放弃 HawkEye，改用 SRRIP，因 HawkEye 在 1MiB Markov table 下仅带来 0.25% 性能提升。
+- **Confidence bit**：仅用于同 index 替换决策，不用于阻止 prefetch（实验表明后者过于悲观）。
+- **Partition sizing**：Triage-ISR 的 Bloom filter 面积过大且偏向 metadata，Triangel 改用 sampling-based set duelling。
+
+### 2.2 Triangel 新增结构
+
+Triangel 在修复后的 Triage 基础上增加以下组件：
+
+1. **Training table 扩展**  
+   - 增加 LastAddr[1] shift register（支持 lookahead=2）  
+   - 每 PC 本地 timestamp（计算 reuse distance）  
+   - ReuseConfidence（saturating counter，评估模式是否短到可存于 Markov table）  
+   - PatternConfidence（两个 4-bit counters，阈值分别为 2/3 和 5/6，控制 prefetch 和存储）  
+   - SampleRate（动态采样率）
+
+2. **History Sampler**  
+   - 512 entries, 2-way set-associative  
+   - 采样 training table 条目，检测 reuse distance 是否小于 Markov table 容量（MaxSize）。若小于，增加 ReuseConf。  
+   - 若当前地址匹配 sampler 中的 target，增加 PatternConf。
+
+3. **Second-Chance Sampler**  
+   - 64 entries  
+   - 当 history sampler 中的 target 与当前地址不匹配时，将该 target 放入 SCS。若后续 512 次 L2 fill 内访问到该地址，则认为 prefetch 仍然有效（非严格顺序模式），增加 PatternConf。
+
+4. **Metadata Reuse Buffer**  
+   - 256 entries, 2-way set-associative  
+   - 缓存最近使用的 Markov table 项，避免高 degree prefetch 时的重复 L3 访问。  
+   - 若 prefetch target 未变化，还可跳过对 L3 的 update。
+
+5. **Set Dueller for partition sizing**  
+   - 采样 64 个随机 cache sets  
+   - 分别模拟纯 data cache 和纯 Markov table 的 LRU 命中行为  
+   - 对 9 种可能 partition（0~8 ways 给 Markov table）分别统计命中计数器  
+   - 每 500k 次访问后选择最优 partition，减少 re-indexing 开销。
+
+整体新增专用存储 17.6KiB，远小于 Triage 的 219.5KiB（主要为 Bloom filter 和 HawkEye 结构）。
+
+---
+
+## 3. Prefetch Aggressiveness 控制
+
+- **Lookahead**：当 HighPatternConf 达到最大值 15 时，使用 LastAddr[1] 作为 index，存储跨两个步长的关联（例如 (x,z) 而非 (x,y)），提高 timeliness。
+- **Degree**：当 HighPatternConf > 8 时，最多发出 4 个 chained prefetch 请求。
+- **低置信度处理**：若 ReuseConf 或 BasePatternConf ≤ 8，不存储 metadata 且不发出 prefetch。
+- 动态采样率调整：根据 sampler 中的替换压力，调整每 PC 的 SampleRate，确保长期模式能被观测。
+
+---
+
+## 4. 实验设置
+
+- **Simulator**: gem5 v23.0.0.1，full-system mode，KVM 生成 checkpoints  
+- **Core 配置**: 5-wide out-of-order, 2GHz, 288 ROB, L1 I/D 64KiB, L2 512KiB, L3 2MiB/core  
+- **Memory**: LPDDR5-5500  
+- **Baseline**: stride prefetcher only  
+- **对比对象**: Triage (degree-1), Triage-Deg4, Triage-Deg4-Look2, Triangel (Bloom filter variant)  
+- **Workloads**: SPEC CPU2006 中 7 个 memory-intensive 程序（Xalan, Omnetpp, Mcf, GCC, Astar, Soplex, Sphinx3），多核混跑，Graph500 adversarial test
+
+---
+
+## 5. 主要结果
+
+### 5.1 Performance 与 Traffic
+
+| Configuration | Geomean Speedup | DRAM Traffic Increase | L3 Accesses Increase |
+|---------------|----------------|----------------------|----------------------|
+| Triage (deg=1) | 9.3% | 28% | — |
+| Triage-Deg4 | 14.2% | 43.8% | >5× |
+| Triangel | 26.4% | 10% | significantly lower than Triage-Deg4 |
+| Triangel-Bloom | 26.1% | 14.6% | — |
+
+Triangel 在性能上优于所有 Triage 变体，同时 traffic 开销最低。加速主要源于 high degree + lookahead-2 带来的 timeliness 提升，而 accuracy（prefetched lines used before eviction）和 coverage 均高于 Triage。
+
+### 5.2 Energy 估算
+
+- 方法：DRAM access cost 25 units, L3 access (含 Markov table) cost 1 unit  
+- 结果：Triangel normalized energy 14%，Triage 36%，Triage-Deg4 60%
+
+### 5.3 多核混跑
+
+Triangel 性能保持稳定，Triage-Deg4 在 bandwidth-constrained 时出现 slowdown（如 genome 负载）。
+
+### 5.4 Adversarial Workload（Graph500）
+
+- 无 temporal correlation  
+- Triage 强制增大 Markov partition，挤占 L3 data cache，导致性能下降  
+- Triangel 的 Set Dueller 优先保留 data cache 命中，几乎不激活 prefetch，无性能损失
+
+### 5.5 Ablation Study
+
+依次添加：
+1. Lookahead-2 → 性能微增，traffic 仍高  
+2. 42-bit direct address format → 消除 LUT mis-prefetch  
+3. BasePatternConf（2/3 threshold）→ DRAM traffic 减半  
+4. Second-Chance Sampler → 恢复 Omnet/Sphinx3 性能  
+5. Metadata Reuse Buffer → 降低 L3 访问，energy 优化  
+6. Set Dueller → 进一步降低 traffic（牺牲少量性能换取 efficiency）  
+7. HighPatternConf（5/6 threshold）→ 控制 aggressiveness，减少无效 prefetch
+
+---
+
+## 6. 结论
+
+论文首先系统性地识别并修复了 Triage 中多个不可实现或不合理的设计点，得到一个可实际部署的 baseline。在此基础上提出的 Triangel，通过 sampling 机制评估每 PC 模式的质量，并据此动态调整 prefetch lookahead、degree 以及 metadata 存储决策，同时利用 Set Dueller 直接权衡 data cache 与 prefetch metadata 的空间分配。相比于 Triage 的最高性能配置，Triangel 在 SPEC CPU2006 上实现了 26.4% 的 speedup（vs 14.2%），DRAM traffic 仅增加 10%（vs 43.8%），专用存储面积减少约 92%。作者已将实现作为 gem5 开源扩展发布。
