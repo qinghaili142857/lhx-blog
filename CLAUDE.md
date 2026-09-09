@@ -23,9 +23,6 @@ pnpm preview
 # Regenerate pagefind search index (after content changes)
 pnpm search:index
 
-# Create a new moments entry (prompts for JSON input or pass file path)
-pnpm moment:create [path/to/payload.json]
-
 # Lint
 pnpm run eslint .
 
@@ -51,8 +48,7 @@ All user-facing config lives in `frosti.config.yaml` (site info, menu, theme, so
 
 ### Content Collections (`src/content/`)
 - **`blog`** — MDX blog posts with frontmatter: title, description, pubDate, updated, image, badge, draft, categories[], tags[]
-- **`moments`** — MDX micro-entries with type (Photo/Note/Video/Live/Sayings), mood, accent color, gallery, location, music
-- Both validate schemas via `src/content/config.ts`
+- Blog posts validate their schema via `src/content/config.ts`
 - Draft posts are hidden in production (`import.meta.env.PROD`)
 
 ### Pages (`src/pages/`)
@@ -64,7 +60,6 @@ All user-facing config lives in `frosti.config.yaml` (site info, menu, theme, so
 - **`blog/archives.astro`** — archive view (grouped by year/month)
 - **`blog/categories.astro`** / **`blog/tags.astro`** — overview pages
 - **`blog/search.astro`** — pagefind search page
-- **`moments.astro`** / **`moments/[slug].astro`** / **`moments/studio.astro`** — moments micro-blog
 - **`about.astro`**, **`project.astro`**, **`friend.astro`**, **`404.astro`**
 - **`og/[...slug].png.ts`** — dynamic OG image generation via satori
 - **`rss.xml.ts`**, **`sitemap.xml.ts`**, **`robots.txt.ts`** — SEO feeds
@@ -75,5 +70,4 @@ All user-facing config lives in `frosti.config.yaml` (site info, menu, theme, so
 - **Pagination**: `src/utils/paginationUtils.ts` drives paginated routes for blog, tags, and categories, all using `BLOG_PAGE_SIZE` from config
 - **i18n**: translations live in `src/i18n/translations.yaml`, accessed via `t("label.key")` from `src/config.ts`
 - **Path aliases**: `@/` → `src/`, `@components/` → `src/components/`, `@layouts/` → `src/layouts/`, `@config` → `src/config.ts`, `@interfaces/` → `src/interface/`, `@utils/` → `src/utils/`
-- **Types**: `src/interface/site.ts` (config), `src/interface/data.ts` (Post, Page, component props, MomentEntry)
-- **Scripts**: `scripts/create-moment.mjs` generates a moments MDX file from a JSON payload (used by `pnpm moment:create`)
+- **Types**: `src/interface/site.ts` (config), `src/interface/data.ts` (Post, Page, component props)
