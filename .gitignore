@@ -39,8 +39,8 @@ yarn.lock
 # Git internal leftovers
 /FETCH_HEAD
 
-# Local editor settings (keep extensions.json / launch.json tracked)
-.vscode/settings.json
+# Local editor settings
+.vscode/
 .idea/
 *.swp
 *.swo
